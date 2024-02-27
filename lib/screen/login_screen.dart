@@ -10,16 +10,20 @@ import '../utility/constants/dimens_constants.dart';
 import '../utility/constants/string_constants.dart';
 
 class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+  final LoginController _controller = Get.put(LoginController());
 
-  final LoginController _controller = Get.put(LoginController(false.obs));
+  LoginScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CommonScaffold(body: Center(child: _body()));
+    return CommonScaffold(
+      body: Center(
+        child: _loginForm(),
+      ),
+    );
   }
 
-  Widget _body() {
+  Widget _loginForm() {
     return Container(
       margin: const EdgeInsets.all(DimenConstants.layoutPadding),
       child: SingleChildScrollView(
@@ -28,42 +32,10 @@ class LoginScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  _iconWidget(),
-                  _textFields(),
-                  _loginButton(),
-                ],
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                padding: const EdgeInsets.all(DimenConstants.contentPadding),
-                child: InkWell(
-                  onTap: () => _controller.onTapSignUp(),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Don't have an account? ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "Sign Up ",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Get.theme.colorScheme.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            _iconWidget(),
+            _textFields(),
+            _loginButton(),
+            _signUpPrompt(),
           ],
         ),
       ),
@@ -85,32 +57,11 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: DimenConstants.layoutPadding),
-          SizedBox(
+          Image.asset(
+            StringConstants.signIn,
             height: Get.height * 0.13,
-            child: Image.asset(
-              StringConstants.signIn,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Sign In',
-                      style: TextStyle(
-                        fontSize: Get.textTheme.headlineSmall?.fontSize,
-                      ),
-                    ),
-                    const SizedBox(width: DimenConstants.contentPadding),
-                    Icon(
-                      Icons.login,
-                      size: Get.textTheme.headlineSmall?.fontSize,
-                    )
-                  ],
-                );
-              },
-            ),
-          )
+            fit: BoxFit.contain,
+          ),
         ],
       ),
     );
@@ -122,41 +73,27 @@ class LoginScreen extends StatelessWidget {
       child: Form(
         key: _controller.formKey,
         child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CustomTextField(
               textEditingController: _controller.etEmail,
               hintText: "Email",
               keyboardType: TextInputType.emailAddress,
               prefixIcon: Icons.email_outlined,
-              currentFocusNode: _controller.etEmailFocusNode,
               nextFocusNode: _controller.etPasswordFocusNode,
-              allowedRegex: "[a-zA-Z0-9@.]",
-              validatorFunction: (value) {
-                if (value!.isEmpty) {
-                  return 'Email Cannot Be Empty';
-                }
-                if (!GetUtils.isEmail(value)) {
-                  return 'Enter Valid Email';
-                }
-                return null;
-              },
             ),
             const SizedBox(height: DimenConstants.contentPadding),
-            CustomHiddenTextField(
-              textEditingController: _controller.etPassword,
-              hintText: "Password",
-              prefixIcon: Icons.lock_outline,
-              currentFocusNode: _controller.etPasswordFocusNode,
-              validatorFunction: (value) {
-                if (value!.isEmpty) {
-                  return 'Password Cannot Be Empty';
-                }
-                return null;
-              },
-            ),
+            Obx(() => CustomHiddenTextField(
+                  textEditingController: _controller.etPassword,
+                  hintText: "Password",
+                  prefixIcon: Icons.lock_outline,
+                  obscureText: _controller.isPasswordHidden.value,
+                  suffixIcon: IconButton(
+                    icon: Icon(_controller.isPasswordHidden.value
+                        ? Icons.visibility_off
+                        : Icons.visibility),
+                    onPressed: _controller.togglePasswordVisibility,
+                  ),
+                )),
           ],
         ),
       ),
@@ -166,9 +103,30 @@ class LoginScreen extends StatelessWidget {
   Widget _loginButton() {
     return CustomButton(
       buttonText: "Sign In",
-      onButtonPressed: () => {
-        _controller.onPressButtonLogin(),
-      },
+      onButtonPressed: _controller.onPressButtonLogin,
+    );
+  }
+
+  Widget _signUpPrompt() {
+    return Padding(
+      padding: const EdgeInsets.all(DimenConstants.contentPadding),
+      child: InkWell(
+        onTap: _controller.onTapSignUp,
+        child: RichText(
+          text: TextSpan(
+            text: "Don't have an account? ",
+            style: TextStyle(color: Colors.black),
+            children: [
+              TextSpan(
+                text: "Sign Up",
+                style: TextStyle(
+                  color: Get.theme.colorScheme.primary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
