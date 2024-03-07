@@ -5,6 +5,5 @@ class ApiConstants {
   static const String register = "$baseUser/Register";
   static const String login = "$baseUser/Login";
   static const String getProfile = "$baseUser/GetUserProfile/";
-  static const String changePassword = "$baseUser/ChangePassword";
-  static const String updateProfile = "$baseUser/UpdateProfile";
+
 }

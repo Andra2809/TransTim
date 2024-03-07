@@ -138,5 +138,56 @@ class ApiProvider extends GetConnect {
     return json.decode(sanitizedJson);
   }
 
+static Future<List<dynamic>> updateResource({
+  required String url,
+  required bool isAuthenticationRequired,
+  Map<String, dynamic>? requestBody,
+  bool? hideSnackBars,
+}) async {
+  List<dynamic> responsePayload = [];
+  GetConnect connector = GetConnect();
+  connector.timeout = const Duration(seconds: 30);
+
+  final response = await connector.put(
+    url,
+    requestBody,
+    headers: isAuthenticationRequired ? await _getHeaders() : null,
+  );
+
+  // Debugging information
+  CommonHelper.printDebug("URL: $url\nRequest Body: ${requestBody.toString()}");
+  CommonHelper.printDebug("Response Body: ${response.bodyString}");
+
+  if (response.status.connectionError) {
+    if (hideSnackBars != true) {
+      SnackBarUtils.errorSnackBar(
+        title: 'Connection Error',
+        message: 'Please check your internet connection and try again.',
+      );
+    }
+  } else if (response.unauthorized) {
+    _navigateToLogin();
+  } else if (!response.status.hasError) {
+    dynamic responseData = response.body;
+    String? apiStatus = responseData["status"];
+
+    if (apiStatus != null) {
+      var statusMap = {"api_status": apiStatus};
+      if (responseData["Data"] != null) {
+        responsePayload = responseData["Data"].map((item) {
+          return item..putIfAbsent("api_status", () => apiStatus);
+        }).toList();
+      } else {
+        responsePayload.add(statusMap);
+      }
+    } else {
+      responsePayload.add(responseData);
+    }
+  }
+
+  return responsePayload;
+}
+
+
   static void _navigateToLogin() {}
 }
