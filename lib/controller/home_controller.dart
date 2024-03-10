@@ -220,5 +220,78 @@ class HomeController extends GetxController {
       marker != null ? markerList.add(marker) : null;
     }
   }
+  
+  class MapController {
+  final googleMapController = GoogleMapController();
+
+  void cameraZoomIn(LatLng? latLng, double? zoomLength) {
+    MapUtils.zoomInCamera(
+      controller: googleMapController,
+      latLng: latLng ?? LatLng(0, 0), // Assuming a default value or handle it appropriately
+      zoomLength: zoomLength ?? 14.0, // Default zoom length or a sensible default
+    );
+  }
+
+  Future<void> zoomCameraAndAddPolyline() async {
+    if (startLatLng.value == null) return;
+
+    cameraZoomIn(startLatLng.value, null);
+
+    if (destinationLatLng.value == null) return;
+
+    final routeDetails = await PolyLineUtils.getRouteDetails(
+      origin: startLatLng.value!,
+      destination: destinationLatLng.value!,
+      travelMode: selectedModeType.value,
+      selectedTransitModes: selectedTransitList,
+    );
+
+    if (routeDetails.isEmpty) {
+      SnackBarUtils.errorSnackBar(message: 'No routes available');
+      return;
+    }
+
+    routeStepList.value = routeDetails;
+    final polylines = await PolyLineUtils.addPolyLines(
+      origin: startLatLng.value!,
+      routeSteps: routeStepList,
+    );
+
+    if (polylines.isEmpty) {
+      SnackBarUtils.errorSnackBar(message: 'No routes available');
+      return;
+    }
+
+    polylineList.addAll(polylines);
+    addChangeMarkers(routeStepList);
+    cameraZoomIn(startLatLng.value, 12.0);
+  }
+
+  void addChangeMarkers(List<RouteStep> steps) {
+    for (int i = 1; i < steps.length; i++) {
+      final currentStep = steps[i];
+      final previousStep = steps[i - 1];
+      if (!_shouldAddModeChangeMarker(previousStep, currentStep)) continue;
+
+      final decodedPoints = PolyLineUtils.decodePoly(poly: currentStep.polylinePoints!);
+      final marker = MapUtils.addMarker(
+        latLng: decodedPoints.first,
+        title: currentStep.instructions,
+        type: 'change',
+        snippet: _getModeDescription(currentStep),
+      );
+
+      if (marker != null) markerList.add(marker);
+    }
+  }
+
+  bool _shouldAddModeChangeMarker(RouteStep prevStep, RouteStep currentStep) =>
+      prevStep.transitMode != currentStep.transitMode;
+
+  String _getModeDescription(RouteStep step) =>
+      step.transitMode != null ? 'Transit Mode: ${step.transitMode}' :
+      step.vehicleMode != null ? 'Vehicle Mode: ${step.vehicleMode}' :
+      'Travel Mode: ${step.travelMode ?? ""}';
+ }
 
 }
