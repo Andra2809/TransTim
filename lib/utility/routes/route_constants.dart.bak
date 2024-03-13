@@ -5,5 +5,4 @@ class RouteConstants {
   static const String homeScreen = "/homeScreen";
   static const String profileScreen = "/profileScreen";
   static const String changePasswordScreen = "/changePasswordScreen";
-  static const String stepDetailsScreen = "/stepDetailsScreen";
 }
