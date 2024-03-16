@@ -14,6 +14,7 @@ namespace webapi_demo.Controllers
             return userMaster.InvalidRequest();
         }
 
+
         [HttpPost]
         [Route("api/User/Register")]
         public HttpResponseMessage Register([FromBody] UserMasterModel userMasterModel)
@@ -28,5 +29,26 @@ namespace webapi_demo.Controllers
             return Models.Helper.getResponse(userMaster.Login(userMasterModel));
         }
 
+        [HttpGet]
+        [Route("api/User/GetUserProfile/{userId}")]
+        public HttpResponseMessage GetProfileByUserId(string userId)
+        {
+            return Models.Helper.getResponse(userMaster.GetProfileByUserId(userId));
+        }
+
+
+        [HttpPost]
+        [Route("api/User/ChangePassword")]
+        public HttpResponseMessage ChangePassword([FromBody] UserMasterModel userMasterModel)
+        {
+            return Models.Helper.getResponse(userMaster.ChangePassword(userMasterModel));
+        }
+
+        [HttpPost]
+        [Route("api/User/UpdateProfile")]
+        public HttpResponseMessage UpdateProfile([FromBody] UserMasterModel userMasterModel)
+        {
+            return Models.Helper.getResponse(userMaster.UpdateProfile(userMasterModel));
+        } 
     }
 }
