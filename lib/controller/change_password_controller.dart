@@ -9,6 +9,7 @@ import '../../utility/helper/snack_bar_utils.dart';
 import '../../utility/routes/route_constants.dart';
 import '../../utility/services/api_provider.dart';
 import '../../utility/services/user_pref.dart';
+import '../model/user_master.dart';
 
 class ChangePasswordController extends GetxController {
   late TextEditingController etOldPassword;

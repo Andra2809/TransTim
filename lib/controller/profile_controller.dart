@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../utility/common_widgets/common_progress.dart';
 import '../../utility/constants/api_constants.dart';
@@ -11,12 +12,18 @@ import '../../utility/services/api_provider.dart';
 import '../../utility/services/user_pref.dart';
 import '../model/user_master.dart';
 import '../utility/common_widgets/common_dialog.dart';
+import '../utility/map_helper/map_utils.dart';
+import '../utility/map_helper/search_view.dart';
 
 class ProfileController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isUserLoggedIn = false.obs;
   RxBool isEditingEnabled = false.obs;
 
+  RxString workAddress = ''.obs;
+  RxString homeAddress = ''.obs;
+  RxnString homeAddressLatLng = RxnString();
+  RxnString workAddressLatLng = RxnString();
   RxList<UserMaster> userList = <UserMaster>[].obs;
 
   late TextEditingController etName;
@@ -48,6 +55,12 @@ class ProfileController extends GetxController {
 
   void initObj() {
     String userId = UserPref.getUserId();
+    homeAddress.value = UserPref.getHomeAddress();
+    workAddress.value = UserPref.getWorkAddress();
+    homeAddressLatLng.value =
+        MapUtils.latLngToString(latLng: UserPref.getHomeAddressLatLng());
+    workAddressLatLng.value =
+        MapUtils.latLngToString(latLng: UserPref.getWorkAddressLatLng());
     isUserLoggedIn.value = !(userId == "-1" || userId == "0" || userId.isEmpty);
     if (isUserLoggedIn.value) fetchUserProfile();
   }
@@ -77,6 +90,20 @@ class ProfileController extends GetxController {
     );
   }
 
+  void onTapAddress({required String addressType}) {
+    try {
+      showSearch(
+        context: Get.context as BuildContext,
+        delegate: SearchView(),
+      ).then((value) {
+        onSearched(value: value, isWork: addressType == 'Work');
+      });
+    } catch (e) {
+      CommonHelper.printDebugError(e, "HomeController onTapSearchCity()");
+    } finally {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+  }
 
   void onTapChangePassword() {
     Get.toNamed(RouteConstants.changePasswordScreen);
@@ -104,6 +131,26 @@ class ProfileController extends GetxController {
     }
   }
 
+  void onSearched({required String value, bool? isWork}) async {
+    try {
+      List<Location> locationList = await locationFromAddress(value);
+      Location location = locationList.first;
+      LatLng latLng = LatLng(location.latitude, location.longitude);
+      if (isWork == true) {
+        workAddress.value = value;
+        workAddressLatLng.value = MapUtils.latLngToString(latLng: latLng);
+        UserPref.setWorkAddress(address: value, latLng: latLng);
+      } else {
+        homeAddress.value = value;
+        homeAddressLatLng.value = MapUtils.latLngToString(latLng: latLng);
+        UserPref.setHomeAddress(address: value, latLng: latLng);
+      }
+    } catch (e) {
+      CommonHelper.printDebugError(e, "HomeController onSearched()");
+    } finally {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+  }
 
   Future<UserMaster> createUserObject() async {
     UserMaster user = UserMaster();
@@ -111,6 +158,10 @@ class ProfileController extends GetxController {
     user.fullName = etName.text.toString().trim();
     user.emailId = etEmailId.text.toString().trim();
     user.contactNumber = etContactNumber.text.toString().trim();
+    user.homeAddress = homeAddress.value.trim();
+    user.workAddress = workAddress.value.trim();
+    user.homeAddressLatLng = homeAddressLatLng.value?.trim();
+    user.workAddressLatLng = workAddressLatLng.value?.trim();
     return user;
   }
 
