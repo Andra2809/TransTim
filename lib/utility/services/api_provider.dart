@@ -6,188 +6,160 @@ import '../helper/common_helper.dart';
 import '../helper/snack_bar_utils.dart';
 
 class ApiProvider extends GetConnect {
-  static const _defaultTimeout = Duration(seconds: 30);
-
   static Future<Map<String, String>> _getHeaders() async {
     return {'Accept': 'application/json'};
   }
 
-  // Method to handle GET requests
   static Future<dynamic> getMethod({
     required String url,
-    bool isAuthenticationRequired = false,
+    bool? isAuthenticationRequired,
   }) async {
-    return _handleRequest(
-      method: 'GET',
-      url: url,
-      isAuthenticationRequired: isAuthenticationRequired,
-    );
+    CommonHelper.printDebug("Get Called on url : $url");
+    List<dynamic> jsonResponse = [];
+    GetConnect getConnect = GetConnect();
+    getConnect.timeout = const Duration(seconds: 30);
+    Response response;
+    response = isAuthenticationRequired == true
+        ? await getConnect.get(url, headers: await _getHeaders())
+        : await getConnect.get(url);
+    jsonResponse = [];
+    CommonHelper.printDebug(url);
+    CommonHelper.printDebug(response.bodyString);
+    if (response.status.connectionError) {
+      SnackBarUtils.errorSnackBar(
+        title: 'Connection Timeout',
+        message: 'Check your internet connection',
+      );
+      throw Exception('Handled');
+    } else if (response.unauthorized) {
+      _navigateToLogin();
+    } else if (!response.status.hasError) {
+      // Map data = response.body;
+      String? sanitizedJson =
+          response.bodyString?.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
+      Map<String, dynamic> data = json.decode(sanitizedJson.toString());
+      String? status = data["status"]?.toString();
+      if (status != null) {
+        Map<String, dynamic> statusMap = {"api_status": status};
+        if (data["Data"] != null) {
+          for (int i = 0; i < data["Data"].length; i++) {
+            Map<String, dynamic> maps = data["Data"][i];
+            maps.update("api_status", (existingValue) => status, ifAbsent: () {
+              maps.addIf(!maps.containsKey("api_status"), "api_status", status);
+            });
+            maps.update("api_status", (value) => status);
+            jsonResponse.add(maps);
+          }
+        } else {
+          jsonResponse.add(statusMap);
+        }
+      } else {
+        jsonResponse.add(data);
+      }
+      return jsonResponse;
+    } else {
+      Map data = response.body;
+      CommonHelper.printDebug(data);
+      jsonResponse.add(data);
+    }
+    return jsonResponse;
   }
 
-  // Method to handle POST requests
   static Future<dynamic> postMethod({
     required String url,
-    bool isAuthenticationRequired = false,
+    bool? isAuthenticationRequired,
     Map<String, dynamic>? obj,
-    bool hideSnackBars = false,
+    bool? hideSnackBars,
   }) async {
-    return _handleRequest(
-      method: 'POST',
-      url: url,
-      isAuthenticationRequired: isAuthenticationRequired,
-      body: obj,
-      hideSnackBars: hideSnackBars,
-    );
-  }
-
-  // Method to handle PUT requests
-  static Future<dynamic> putMethod({
-    required String url,
-    bool isAuthenticationRequired = true,
-    Map<String, dynamic>? obj,
-    bool hideSnackBars = false,
-  }) async {
-    return _handleRequest(
-      method: 'PUT',
-      url: url,
-      isAuthenticationRequired: isAuthenticationRequired,
-      body: obj,
-      hideSnackBars: hideSnackBars,
-    );
-  }
-
-  //Method to handle DELETE requests
-  static Future<dynamic> deleteMethod({
-    required String url,
-    bool isAuthenticationRequired = false,
-    bool hideSnackBars = false,
-  }) async {
-    return _handleRequest(
-      method: 'DELETE',
-      url: url,
-      isAuthenticationRequired: isAuthenticationRequired,
-      hideSnackBars: hideSnackBars,
-    );
-  }
-
-  // Unified request handler for different HTTP methods
-  static Future<dynamic> _handleRequest({
-    required String method,
-    required String url,
-    bool isAuthenticationRequired = false,
-    Map<String, dynamic>? body,
-    bool hideSnackBars = false,
-  }) async {
-    GetConnect getConnect = GetConnect();
-    getConnect.timeout = _defaultTimeout;
-
-    Response response;
-    switch (method) {
-      case 'GET':
-        response = isAuthenticationRequired
-            ? await getConnect.get(url, headers: await _getHeaders())
-            : await getConnect.get(url);
-        break;
-      case 'POST':
-        response = isAuthenticationRequired
-            ? await getConnect.post(url, body, headers: await _getHeaders())
-            : await getConnect.post(url, body);
-        break;
-      case 'PUT':
-        response = isAuthenticationRequired
-            ? await getConnect.put(url, body, headers: await _getHeaders())
-            : await getConnect.put(url, body);
-        break;
-      case 'DELETE':
-        response = isAuthenticationRequired
-            ? await getConnect.delete(url, headers: await _getHeaders())
-            : await getConnect.delete(url);
-        break;
-      default:
-        throw Exception('Unsupported HTTP method');
-    }
-
-    return _processResponse(response, hideSnackBars: hideSnackBars);
-  }
-
-  // Response processing logic extracted for reuse
-  static Future<dynamic> _processResponse(Response response, {bool hideSnackBars = false}) async {
     List<dynamic> jsonResponse = [];
+    GetConnect getConnect = GetConnect();
+    getConnect.timeout = const Duration(seconds: 30);
+    final response = isAuthenticationRequired == true
+        ? await getConnect.post(url, obj, headers: await _getHeaders())
+        : await getConnect.post(url, obj);
+    CommonHelper.printDebug("$url\n${obj.toString()}");
+    CommonHelper.printDebug("$url\n${response.bodyString}");
+    jsonResponse = [];
     if (response.status.connectionError) {
-      if (!hideSnackBars) {
+      if (hideSnackBars != true) {
         SnackBarUtils.errorSnackBar(
           title: 'Connection Timeout',
           message: 'Check your internet connection',
         );
       }
-      throw Exception('Connection error handled');
     } else if (response.unauthorized) {
       _navigateToLogin();
     } else if (!response.status.hasError) {
-      jsonResponse.add(_sanitizeAndDecode(response.bodyString));
-    } else {
-      jsonResponse.add(response.body);
-    }
-    return jsonResponse;
-  }
-
-  // Utility function to sanitize and decode JSON response
-  static dynamic _sanitizeAndDecode(String? jsonStr) {
-    if (jsonStr == null) return {};
-    String sanitizedJson = jsonStr.replaceAll(RegExp(r'[\x00-\x1F\x7F-\x9F]'), '');
-    return json.decode(sanitizedJson);
-  }
-
-static Future<List<dynamic>> updateResource({
-  required String url,
-  required bool isAuthenticationRequired,
-  Map<String, dynamic>? requestBody,
-  bool? hideSnackBars,
-}) async {
-  List<dynamic> responsePayload = [];
-  GetConnect connector = GetConnect();
-  connector.timeout = const Duration(seconds: 30);
-
-  final response = await connector.put(
-    url,
-    requestBody,
-    headers: isAuthenticationRequired ? await _getHeaders() : null,
-  );
-
-  // Debugging information
-  CommonHelper.printDebug("URL: $url\nRequest Body: ${requestBody.toString()}");
-  CommonHelper.printDebug("Response Body: ${response.bodyString}");
-
-  if (response.status.connectionError) {
-    if (hideSnackBars != true) {
-      SnackBarUtils.errorSnackBar(
-        title: 'Connection Error',
-        message: 'Please check your internet connection and try again.',
-      );
-    }
-  } else if (response.unauthorized) {
-    _navigateToLogin();
-  } else if (!response.status.hasError) {
-    dynamic responseData = response.body;
-    String? apiStatus = responseData["status"];
-
-    if (apiStatus != null) {
-      var statusMap = {"api_status": apiStatus};
-      if (responseData["Data"] != null) {
-        responsePayload = responseData["Data"].map((item) {
-          return item..putIfAbsent("api_status", () => apiStatus);
-        }).toList();
+      Map data = response.body;
+      String? status = data["status"];
+      if (status != null) {
+        Map<String, dynamic> statusMap = {"api_status": status};
+        if (data["Data"] != null) {
+          for (int i = 0; i < data["Data"].length; i++) {
+            Map<String, dynamic> maps = data["Data"][i];
+            maps.update("api_status", (existingValue) => status, ifAbsent: () {
+              maps.addIf(!maps.containsKey("api_status"), "api_status", status);
+            });
+            maps.update("api_status", (value) => status);
+            jsonResponse.add(maps);
+          }
+        } else {
+          jsonResponse.add(statusMap);
+        }
       } else {
-        responsePayload.add(statusMap);
+        jsonResponse.add(data);
       }
-    } else {
-      responsePayload.add(responseData);
+      return jsonResponse;
     }
   }
 
-  return responsePayload;
-}
-
+  static Future<dynamic> putMethod({
+    required String url,
+    required bool isAuthenticationRequired,
+    Map<String, dynamic>? obj,
+    bool? hideSnackBars,
+  }) async {
+    List<dynamic> jsonResponse = [];
+    GetConnect getConnect = GetConnect();
+    getConnect.timeout = const Duration(seconds: 30);
+    final response = isAuthenticationRequired == true
+        ? await getConnect.put(url, obj, headers: await _getHeaders())
+        : await getConnect.put(url, obj);
+    CommonHelper.printDebug("$url\n${obj.toString()}");
+    CommonHelper.printDebug("$url\n${response.bodyString}");
+    jsonResponse = [];
+    if (response.status.connectionError) {
+      if (hideSnackBars != true) {
+        SnackBarUtils.errorSnackBar(
+          title: 'Connection Timeout',
+          message: 'Check your internet connection',
+        );
+      }
+    } else if (response.unauthorized) {
+      _navigateToLogin();
+    } else if (!response.status.hasError) {
+      Map data = response.body;
+      String? status = data["status"];
+      if (status != null) {
+        Map<String, dynamic> statusMap = {"api_status": status};
+        if (data["Data"] != null) {
+          for (int i = 0; i < data["Data"].length; i++) {
+            Map<String, dynamic> maps = data["Data"][i];
+            maps.update("api_status", (existingValue) => status, ifAbsent: () {
+              maps.addIf(!maps.containsKey("api_status"), "api_status", status);
+            });
+            maps.update("api_status", (value) => status);
+            jsonResponse.add(maps);
+          }
+        } else {
+          jsonResponse.add(statusMap);
+        }
+      } else {
+        jsonResponse.add(data);
+      }
+      return jsonResponse;
+    }
+  }
 
   static void _navigateToLogin() {}
 }

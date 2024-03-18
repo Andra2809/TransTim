@@ -16,11 +16,7 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonScaffold(
-      body: Center(
-        child: _loginForm(),
-      ),
-    );
+    return CommonScaffold(body: Center(child: _body()));
   }
 
   Widget _body() {

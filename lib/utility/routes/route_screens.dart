@@ -34,5 +34,9 @@ class RouteScreens {
       name: RouteConstants.stepDetailsScreen,
       page: () => StepDetailsScreen(),
     ),
+    GetPage(
+      name: RouteConstants.viewAllSavedDirectionScreen,
+      page: () => ViewAllSavedDirectionScreen(),
+    ),
   ];
 }

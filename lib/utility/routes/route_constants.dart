@@ -6,4 +6,5 @@ class RouteConstants {
   static const String profileScreen = "/profileScreen";
   static const String changePasswordScreen = "/changePasswordScreen";
   static const String stepDetailsScreen = "/stepDetailsScreen";
+  static const String viewAllSavedDirectionScreen = "/viewAllSavedDirectionScreen";
 }
