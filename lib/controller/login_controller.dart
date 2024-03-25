@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 import '../model/user_master.dart';
@@ -6,8 +7,11 @@ import '../utility/common_widgets/common_progress.dart';
 import '../utility/constants/api_constants.dart';
 import '../utility/helper/common_helper.dart';
 import '../utility/helper/snack_bar_utils.dart';
+import '../utility/map_helper/gps_utils.dart';
+import '../utility/map_helper/map_utils.dart';
 import '../utility/routes/route_constants.dart';
 import '../utility/services/api_provider.dart';
+import '../utility/services/user_pref.dart';
 
 class LoginController extends GetxController {
   RxBool isTest = false.obs;
@@ -27,6 +31,9 @@ class LoginController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     initUI();
+    if (isTest.value != true) {
+      position.value = await GpsUtils.getCurrentLocation();
+    }
   }
 
   void initUI() {
@@ -45,6 +52,7 @@ class LoginController extends GetxController {
       if (position.value != null) {
         formKey.currentState!.validate() ? login() : null;
       } else {
+        position.value = await GpsUtils.getCurrentLocation();
         if (position.value != null) {
           formKey.currentState!.validate() ? login() : null;
         }
@@ -90,6 +98,23 @@ class LoginController extends GetxController {
     } finally {
       CommonProgressBar.hide();
     }
+  }
+
+  void onLoginSuccess(UserMaster userMaster) async {
+    UserPref.setLoginDetails(
+      userId: userMaster.userId ?? "-1",
+      userName: userMaster.fullName ?? "-1",
+      contactNumber: userMaster.contactNumber ?? "-1",
+      homeAddress: userMaster.homeAddress,
+      workAddress: userMaster.workAddress,
+      homeAddressLatLng: MapUtils.stringToLatLng(
+        latLngString: userMaster.homeAddressLatLng,
+      ),
+      workAddressLatLng: MapUtils.stringToLatLng(
+        latLngString: userMaster.workAddressLatLng,
+      ),
+    );
+    Get.offAllNamed(RouteConstants.homeScreen);
   }
 
   void onLoginFailed(String? error) {
