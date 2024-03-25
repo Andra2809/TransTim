@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using System.Web.Http;
 using static webapi_demo.Models.UserMaster;
 
@@ -14,13 +14,13 @@ namespace webapi_demo.Controllers
             return userMaster.InvalidRequest();
         }
 
-
         [HttpPost]
         [Route("api/User/Register")]
         public HttpResponseMessage Register([FromBody] UserMasterModel userMasterModel)
         {
             return Models.Helper.getResponse(userMaster.Register(userMasterModel));
         }
+
 
         [HttpPost]
         [Route("api/User/Login")]
