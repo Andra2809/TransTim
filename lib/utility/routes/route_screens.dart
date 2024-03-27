@@ -7,6 +7,8 @@ import '../../screen/profile_screen.dart';
 import '../../screen/registration_screen.dart';
 import '../../screen/saved_direction_details_screen.dart';
 import '../../screen/step_details_screen.dart';
+import '../../screen/ticket_booking_screen.dart';
+import '../../screen/view_all_saved_direction_screen.dart';
 import 'route_constants.dart';
 
 class RouteScreens {
@@ -42,6 +44,10 @@ class RouteScreens {
     GetPage(
       name: RouteConstants.savedDirectionDetailsScreen,
       page: () => SavedDirectionDetailsScreen(),
+    ),
+    GetPage(
+      name: RouteConstants.ticketBookingScreen,
+      page: () => TicketBookingScreen(),
     ),
   ];
 }
