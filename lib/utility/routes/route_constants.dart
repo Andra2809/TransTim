@@ -6,7 +6,12 @@ class RouteConstants {
   static const String profileScreen = "/profileScreen";
   static const String changePasswordScreen = "/changePasswordScreen";
   static const String stepDetailsScreen = "/stepDetailsScreen";
-  static const String viewAllSavedDirectionScreen = "/viewAllSavedDirectionScreen";
+  static const String ticketSummaryScreen = "/ticketSummaryScreen";
   static const String ticketBookingScreen = "/ticketBookingScreen";
-  static const String savedDirectionDetailsScreen ="/savedDirectionDetailsScreen";
+
+  static const String viewAllUserTicketScreen = "/viewAllUserTicketScreen";
+  static const String viewAllSavedDirectionScreen =
+      "/viewAllSavedDirectionScreen";
+  static const String savedDirectionDetailsScreen =
+      "/savedDirectionDetailsScreen";
 }

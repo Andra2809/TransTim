@@ -8,7 +8,9 @@ import '../../screen/registration_screen.dart';
 import '../../screen/saved_direction_details_screen.dart';
 import '../../screen/step_details_screen.dart';
 import '../../screen/ticket_booking_screen.dart';
+import '../../screen/ticket_summary_screen.dart';
 import '../../screen/view_all_saved_direction_screen.dart';
+import '../../screen/view_all_user_ticket_screen.dart';
 import 'route_constants.dart';
 
 class RouteScreens {
@@ -38,16 +40,24 @@ class RouteScreens {
       page: () => StepDetailsScreen(),
     ),
     GetPage(
+      name: RouteConstants.ticketSummaryScreen,
+      page: () => TicketSummaryScreen(),
+    ),
+    GetPage(
+      name: RouteConstants.ticketBookingScreen,
+      page: () => TicketBookingScreen(),
+    ),
+    GetPage(
+      name: RouteConstants.viewAllUserTicketScreen,
+      page: () => ViewAllUserTicketScreen(),
+    ),
+    GetPage(
       name: RouteConstants.viewAllSavedDirectionScreen,
       page: () => ViewAllSavedDirectionScreen(),
     ),
     GetPage(
       name: RouteConstants.savedDirectionDetailsScreen,
       page: () => SavedDirectionDetailsScreen(),
-    ),
-    GetPage(
-      name: RouteConstants.ticketBookingScreen,
-      page: () => TicketBookingScreen(),
     ),
   ];
 }
