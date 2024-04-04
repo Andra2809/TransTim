@@ -95,5 +95,75 @@ namespace webapi_demo.Models
             return ans;
         }
 
+        public string GetTicketBookingByUserId(String userId)
+        {
+            SqlConnection con = Database.getDB();
+            string ans = "";
+
+            try
+            {
+                SqlDataAdapter da = new SqlDataAdapter("select Ticket.*, TicketBooking.ticketBookingId," +
+                    "TicketBooking.passengerCount,TicketBooking.date,TicketBooking.time,TicketBooking.totalAmount " +
+                    "from [TicketBooking] LEFT JOIN [Ticket] ON Ticket.ticketId = TicketBooking.ticketId " +
+                    "where TicketBooking.userId = @userId ", con);
+                da.SelectCommand.Parameters.AddWithValue("@userId", userId);
+
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int count = ds.Tables[0].Rows.Count;
+                if (count > 0)
+                {
+                    //Already Exist
+                    ans = jm.Maker(ds);
+                }
+                else
+                {
+                    ans = jm.Singlevalue("no");
+                }
+            }
+            catch (Exception e)
+            {
+                con.Close();
+                ans = jm.Error(e.Message);
+            }
+
+            return ans;
+        }
+
+        public string GetTicketBookingByTicketId(String ticketBookingId)
+        {
+            SqlConnection con = Database.getDB();
+            string ans = "";
+
+            try
+            {
+                SqlDataAdapter da = new SqlDataAdapter("select Ticket.*, TicketBooking.ticketBookingId," +
+                    "TicketBooking.passengerCount,TicketBooking.date,TicketBooking.time from [TicketBooking] " +
+                    "LEFT JOIN [Ticket] ON Ticket.ticketId = TicketBooking.ticketId " +
+                    "where TicketBooking.ticketBookingId = @ticketBookingId ", con);
+                da.SelectCommand.Parameters.AddWithValue("@ticketBookingId", ticketBookingId);
+
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int count = ds.Tables[0].Rows.Count;
+                if (count > 0)
+                {
+                    //Already Exist
+                    ans = jm.Maker(ds);
+                }
+                else
+                {
+                    ans = jm.Singlevalue("no");
+                }
+            }
+            catch (Exception e)
+            {
+                con.Close();
+                ans = jm.Error(e.Message);
+            }
+
+            return ans;
+        }
+
     }
 }
