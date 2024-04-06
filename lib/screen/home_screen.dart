@@ -9,38 +9,39 @@ import '../utility/common_widgets/custom_object_drop_down.dart';
 import '../utility/common_widgets/custom_text_field.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({super.key});
 
   final HomeController _controller = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
+    context.theme;
     return CommonScaffold(
       isBottomBarVisible: true,
       appBar: AppBar(
         title: const Text("Home"),
         centerTitle: true,
-        actions: [
-          _actionWidget(),
-          _themeToggleWidget(context), // Theme toggle button
-        ],
+        actions: [_actionWidget()],
       ),
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('Get Details'),
         icon: const Icon(Icons.directions_outlined),
-        onPressed: _controller.onPressGetDetails,
+        onPressed: () => _controller.onPressGetDetails(),
       ),
-      body: Obx(() => Stack(
-            children: [
-              _googleMap(),
-              Visibility(
-                visible: _controller.isSelectLocationVisible.value,
-                child: SingleChildScrollView(child: _textFields()),
-              ),
-              if (_controller.isMapLoading.value)
-                const Center(child: CircularProgressIndicator()),
-            ],
-          )),
+      body: Obx(
+        () => Stack(
+          children: [
+            _googleMap(),
+            Visibility(
+              visible: _controller.isSelectLocationVisible.value,
+              child: SingleChildScrollView(child: _textFields()),
+            ),
+            _controller.isMapLoading.value
+                ? const Center(child: CircularProgressIndicator())
+                : Container(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -48,19 +49,9 @@ class HomeScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: DimenConstants.mixPadding),
       child: InkWell(
-        onTap: _controller.onTapActionBarIcon,
+        onTap: () => _controller.onTapActionBarIcon(),
         child: const Icon(Icons.directions_outlined),
       ),
-    );
-  }
-
-  Widget _themeToggleWidget(BuildContext context) {
-    // This widget allows users to toggle between light and dark themes.
-    return IconButton(
-      icon: const Icon(Icons.brightness_6),
-      onPressed: () {
-        Get.isDarkMode ? Get.changeTheme(ThemeData.light()) : Get.changeTheme(ThemeData.dark());
-      },
     );
   }
 
@@ -75,7 +66,9 @@ class HomeScreen extends StatelessWidget {
       markers: Set<Marker>.of(_controller.markerList),
       polylines: Set<Polyline>.of(_controller.polylineList),
       initialCameraPosition: const CameraPosition(target: LatLng(0, 0)),
-      onMapCreated: _controller.onMapCreated,
+      onMapCreated: (GoogleMapController googleMapController) {
+        _controller.onMapCreated(googleMapController);
+      },
     );
   }
 
@@ -85,40 +78,60 @@ class HomeScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _locationRow("Start Location", false),
-          _locationRow("Destination", true),
+          Row(
+            children: [
+              Expanded(
+                child: CustomTextField(
+                  hintText: "Start Location",
+                  prefixIcon: Icons.location_searching_outlined,
+                  textEditingController: _controller.etStartLocation,
+                  onTapField: () => _controller.onTapSearchCity(),
+                ),
+              ),
+              _selectHomeOrAddressWidget(),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: CustomTextField(
+                  hintText: "Destination",
+                  prefixIcon: Icons.edit_location_alt_outlined,
+                  textEditingController: _controller.etDestinationLocation,
+                  onTapField: () {
+                    _controller.onTapSearchCity(isDestination: true);
+                  },
+                ),
+              ),
+              _selectHomeOrAddressWidget(isDestination: true),
+            ],
+          ),
           CustomObjectDropDown<String>(
             hintText: 'Select Mode',
             prefixIcon: Icons.type_specimen_outlined,
             objectList: _controller.modeTypeList,
             selected: _controller.selectedModeType,
-            displayTextFunction: (p0) => p0 ?? '',
+            displayTextFunction: (p0) => p0,
             objectsEqualFunction: (p0, p1) => p0 == p1,
-            onChanged: _controller.onModeTypeChange,
+            onChanged: (p0) => _controller.onModeTypeChange(type: p0),
           ),
           Visibility(
-            visible: false, // Keeping for potential future use
+            visible: false,
             child: _transitModeList(),
           ),
-          _directionsText(),
+          Padding(
+            padding: const EdgeInsets.all(DimenConstants.contentPadding),
+            child: Text(
+              '* Click on direction icon on top right to hide/show this window',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: Get.textTheme.bodyMedium?.fontSize,
+              ),
+            ),
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _locationRow(String hintText, bool isDestination) {
-    return Row(
-      children: [
-        Expanded(
-          child: CustomTextField(
-            hintText: hintText,
-            prefixIcon: isDestination ? Icons.edit_location_alt_outlined : Icons.location_searching_outlined,
-            textEditingController: isDestination ? _controller.etDestinationLocation : _controller.etStartLocation,
-            onTapField: () => _controller.onTapSearchCity(isDestination: isDestination),
-          ),
-        ),
-        _selectHomeOrAddressWidget(isDestination: isDestination),
-      ],
     );
   }
 
@@ -126,37 +139,64 @@ class HomeScreen extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _iconButton(Icons.home_outlined, () => _controller.onTapHomeAddress(isDestination: isDestination)),
-        _iconButton(Icons.work_outline, () => _controller.onTapWorkAddress(isDestination: isDestination)),
+        InkWell(
+          onTap: () {
+            _controller.onTapHomeAddress(isDestination: isDestination);
+          },
+          child: const Padding(
+            padding: EdgeInsets.all(DimenConstants.smallContentPadding),
+            child: Icon(Icons.home_outlined),
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            _controller.onTapWorkAddress(isDestination: isDestination);
+          },
+          child: const Padding(
+            padding: EdgeInsets.all(DimenConstants.smallContentPadding),
+            child: Icon(Icons.work_outline),
+          ),
+        ),
       ],
     );
   }
 
-  Widget _iconButton(IconData icon, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.all(DimenConstants.smallContentPadding),
-        child: Icon(icon),
-      ),
-    );
-  }
-
   Widget _transitModeList() {
-    // Existing implementation...
-  }
-
-  Widget _directionsText() {
-    return Padding(
-      padding: const EdgeInsets.all(DimenConstants.contentPadding),
-      child: Text(
-        '* Click on direction icon on top right to hide/show this window',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Colors.grey,
-          fontSize: Get.textTheme.bodyMedium?.fontSize,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(DimenConstants.contentPadding),
+          child: Text(
+            'Transit modes',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
+        Card(
+          margin: const EdgeInsets.all(DimenConstants.contentPadding),
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _controller.transitModeList.length,
+            itemBuilder: (context, index) {
+              String transit = _controller.transitModeList[index];
+              return Row(
+                children: [
+                  Checkbox(
+                    value: _controller.selectedTransitList.contains(transit),
+                    onChanged: (value) {
+                      _controller.onChangeTransitCheckBox(transit: transit);
+                    },
+                  ),
+                  Expanded(child: Text(transit)),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

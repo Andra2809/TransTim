@@ -58,7 +58,7 @@ class StepDetailsController extends GetxController {
 
   String getArrivalTime() {
     final currentTime = DateTime.now().add(const Duration(minutes: 3));
-    return "Arrival time: ${DateFormat('HH:mm').format(currentTime)}";
+    return " Arrival time: ${DateFormat('HH:mm').format(currentTime)}";
   }
 
   Future<void> _checkIfDrivingElseFetchDrivingData() async {
@@ -79,9 +79,12 @@ class StepDetailsController extends GetxController {
         url: ApiConstants.addDirection,
         obj: savedDirectionArg.value?.toJson(),
       ).then((response) {
-        List savedDirectionList = response.map((e) => SavedDirection.fromJson(e)).toList();
+        List savedDirectionList = response.map((e) {
+          return SavedDirection.fromJson(e);
+        }).toList();
         if (savedDirectionList.isNotEmpty) {
-          if ((savedDirectionList.first.status != null) && savedDirectionList.first.status != 'true') {
+          if ((savedDirectionList.first.status != null) &&
+              savedDirectionList.first.status != 'true') {
             onFailedResponse(savedDirectionList.first.status.toString());
           } else {
             onSuccessResponse();
@@ -113,13 +116,14 @@ class StepDetailsController extends GetxController {
   Future<void> _getDrivingRouteList() async {
     LatLng? startLatLng = totalRouteStepArg.value?.startLocation;
     LatLng? destinationLatLng = totalRouteStepArg.value?.endLocation;
-    
-    if (startLatLng != null && destinationLatLng != null) {
-      drivingRouteStepList.value = await PolyLineUtils.getRouteDetails(
-        origin: startLatLng,
-        destination: destinationLatLng,
-        travelMode: StringConstants.driving,
-      );
+    if (startLatLng != null) {
+      if (destinationLatLng != null) {
+        drivingRouteStepList.value = await PolyLineUtils.getRouteDetails(
+          origin: startLatLng,
+          destination: destinationLatLng,
+          travelMode: StringConstants.driving,
+        );
+      }
     }
   }
 }

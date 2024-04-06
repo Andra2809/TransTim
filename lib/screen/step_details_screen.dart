@@ -1,7 +1,9 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
+
 import '../controller/step_details_controller.dart';
 import '../model/route_step.dart';
 import '../utility/common_widgets/common_scaffold.dart';
@@ -10,7 +12,7 @@ import '../utility/constants/dimens_constants.dart';
 import '../utility/constants/string_constants.dart';
 
 class StepDetailsScreen extends StatelessWidget {
-  StepDetailsScreen({Key? key}) : super(key: key);
+  StepDetailsScreen({super.key});
 
   final StepDetailsController _controller = Get.put(StepDetailsController());
 
@@ -21,7 +23,9 @@ class StepDetailsScreen extends StatelessWidget {
       body: _body(),
       isBottomBarVisible: true,
       bottomNavigationBar: Obx(() {
-        return _controller.routeStepList.isEmpty ? const SizedBox.shrink() : _boltServiceCard();
+        return _controller.routeStepList.isEmpty
+            ? const SizedBox.shrink()
+            : _boltServiceCard();
       }),
     );
   }
@@ -42,7 +46,8 @@ class StepDetailsScreen extends StatelessWidget {
                     visible: _controller.isTransitModeSelected.value,
                     child: _stepIcons(),
                   ),
-                  _totalStepCard(routeStep: _controller.totalRouteStepArg.value),
+                  _totalStepCard(
+                      routeStep: _controller.totalRouteStepArg.value),
                 ],
               ),
             ),
@@ -63,36 +68,38 @@ class StepDetailsScreen extends StatelessWidget {
   }
 
   Widget _bottomButton() {
-    return Obx(() {
-      return Row(
-        children: [
-          Visibility(
-            visible: _controller.savedDirectionArg.value != null,
-            child: Expanded(
-              child: CustomButton(
-                isWrapContent: true,
-                margin: const EdgeInsets.all(DimenConstants.contentPadding),
-                buttonText: "Save Direction",
-                onButtonPressed: () {
-                  _controller.onPressButtonSaveDirection();
-                },
+    return Obx(
+      () {
+        return Row(
+          children: [
+            Visibility(
+              visible: _controller.savedDirectionArg.value != null,
+              child: Expanded(
+                child: CustomButton(
+                  isWrapContent: true,
+                  margin: const EdgeInsets.all(DimenConstants.contentPadding),
+                  buttonText: "Save Direction",
+                  onButtonPressed: () {
+                    _controller.onPressButtonSaveDirection();
+                  },
+                ),
               ),
             ),
-          ),
-          Visibility(
-            visible: _controller.isTransitModeSelected.value,
-            child: Expanded(
-              child: CustomButton(
-                isWrapContent: true,
-                margin: const EdgeInsets.all(DimenConstants.contentPadding),
-                buttonText: "Buy Tickets",
-                onButtonPressed: () => _controller.onPressButtonBookTickets(),
+            Visibility(
+              visible: _controller.isTransitModeSelected.value,
+              child: Expanded(
+                child: CustomButton(
+                  isWrapContent: true,
+                  margin: const EdgeInsets.all(DimenConstants.contentPadding),
+                  buttonText: "Buy Tickets",
+                  onButtonPressed: () => _controller.onPressButtonBookTickets(),
+                ),
               ),
             ),
-          ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 
   Widget _boltServiceCard() {

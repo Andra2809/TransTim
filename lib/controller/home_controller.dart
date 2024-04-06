@@ -37,7 +37,7 @@ class HomeController extends GetxController {
   RxList<String> transitModeList = StringConstants.transitList.obs;
   RxList<String> selectedTransitList = StringConstants.transitList.obs;
 
-  RxList<String> selectedTransitList = <String>[StringConstants.bus].obs;
+  // RxList<String> selectedTransitList = <String>[StringConstants.bus].obs;
 
   GoogleMapController? googleMapController;
   final Completer<GoogleMapController> _controller = Completer();
@@ -66,6 +66,33 @@ class HomeController extends GetxController {
     }
   }
 
+  SavedDirection? _createSavedDirectionObject() {
+    SavedDirection? direction;
+    try {
+      String userId = UserPref.getUserId();
+      bool isUserIdEmpty = userId == "-1" || userId == "0" || userId.isEmpty;
+      if (!isUserIdEmpty &&
+          startLatLng.value != null &&
+          destinationLatLng.value != null) {
+        direction = SavedDirection();
+        direction.userId = UserPref.getUserId();
+        direction.startLocation = etStartLocation.text.trim();
+        direction.endLocation = etDestinationLocation.text.trim();
+        direction.startLocationLatLng = MapUtils.latLngToString(
+          latLng: startLatLng.value,
+        );
+        direction.endLocationLatLng = MapUtils.latLngToString(
+          latLng: destinationLatLng.value,
+        );
+        direction.mode = selectedModeType.value;
+        direction.travelMode = selectedTransitList.join("|");
+      }
+    } catch (e) {
+      direction = null;
+      CommonHelper.printDebugError(e, "_createSavedDirectionObject");
+    }
+    return direction;
+  }
 
   void initUI() {
     etStartLocation = TextEditingController();
@@ -220,78 +247,74 @@ class HomeController extends GetxController {
       marker != null ? markerList.add(marker) : null;
     }
   }
-  
-  class MapController {
-  final googleMapController = GoogleMapController();
 
   void cameraZoomIn(LatLng? latLng, double? zoomLength) {
     MapUtils.zoomInCamera(
-      controller: googleMapController,
-      latLng: latLng ?? LatLng(0, 0), // Assuming a default value or handle it appropriately
-      zoomLength: zoomLength ?? 14.0, // Default zoom length or a sensible default
+      controller: googleMapController!,
+      latLng: latLng,
+      zoomLength: zoomLength,
     );
   }
 
-  Future<void> zoomCameraAndAddPolyline() async {
-    if (startLatLng.value == null) return;
+  Future<void> _zoomCameraAndAddPolyLine() async {
+    if (startLatLng.value != null) {
+      cameraZoomIn(startLatLng.value, null);
+      if (destinationLatLng.value != null) {
+        routeStepList.value = await PolyLineUtils.getRouteDetails(
+          origin: startLatLng.value,
+          destination: destinationLatLng.value,
+          travelMode: selectedModeType.value,
+          selectedTransitModes: selectedTransitList,
+        );
 
-    cameraZoomIn(startLatLng.value, null);
+        if (routeStepList.isNotEmpty) {
+          List<Polyline>? list = await PolyLineUtils.addPolyLines(
+            origin: startLatLng.value!,
+            routeSteps: routeStepList,
+          );
 
-    if (destinationLatLng.value == null) return;
-
-    final routeDetails = await PolyLineUtils.getRouteDetails(
-      origin: startLatLng.value!,
-      destination: destinationLatLng.value!,
-      travelMode: selectedModeType.value,
-      selectedTransitModes: selectedTransitList,
-    );
-
-    if (routeDetails.isEmpty) {
-      SnackBarUtils.errorSnackBar(message: 'No routes available');
-      return;
-    }
-
-    routeStepList.value = routeDetails;
-    final polylines = await PolyLineUtils.addPolyLines(
-      origin: startLatLng.value!,
-      routeSteps: routeStepList,
-    );
-
-    if (polylines.isEmpty) {
-      SnackBarUtils.errorSnackBar(message: 'No routes available');
-      return;
-    }
-
-    polylineList.addAll(polylines);
-    addChangeMarkers(routeStepList);
-    cameraZoomIn(startLatLng.value, 12.0);
-  }
-
-  void addChangeMarkers(List<RouteStep> steps) {
-    for (int i = 1; i < steps.length; i++) {
-      final currentStep = steps[i];
-      final previousStep = steps[i - 1];
-      if (!_shouldAddModeChangeMarker(previousStep, currentStep)) continue;
-
-      final decodedPoints = PolyLineUtils.decodePoly(poly: currentStep.polylinePoints!);
-      final marker = MapUtils.addMarker(
-        latLng: decodedPoints.first,
-        title: currentStep.instructions,
-        type: 'change',
-        snippet: _getModeDescription(currentStep),
-      );
-
-      if (marker != null) markerList.add(marker);
+          if (list.isNotEmpty) {
+            polylineList.addAll(list);
+            for (int i = 1; i < routeStepList.length; i++) {
+              RouteStep step = routeStepList[i];
+              RouteStep prevStep = routeStepList[i - 1];
+              if (step.polylinePoints != null) {
+                List<LatLng> decodedPoints = PolyLineUtils.decodePoly(
+                  poly: step.polylinePoints!,
+                );
+                if (_shouldAddModeChangeMarker(prevStep, step)) {
+                  Marker? marker = await MapUtils.addMarker(
+                    latLng: decodedPoints.first,
+                    title: step.instructions,
+                    type: 'change',
+                    snippet: _getModeDescription(step),
+                  );
+                  if (marker != null) markerList.add(marker);
+                }
+              }
+            }
+            cameraZoomIn(startLatLng.value, 12.0);
+          } else {
+            SnackBarUtils.errorSnackBar(message: 'No routes available');
+          }
+        } else {
+          SnackBarUtils.errorSnackBar(message: 'No routes available');
+        }
+      }
     }
   }
 
-  bool _shouldAddModeChangeMarker(RouteStep prevStep, RouteStep currentStep) =>
-      prevStep.transitMode != currentStep.transitMode;
+  bool _shouldAddModeChangeMarker(RouteStep prevStep, RouteStep currentStep) {
+    return prevStep.transitMode != currentStep.transitMode;
+  }
 
-  String _getModeDescription(RouteStep step) =>
-      step.transitMode != null ? 'Transit Mode: ${step.transitMode}' :
-      step.vehicleMode != null ? 'Vehicle Mode: ${step.vehicleMode}' :
-      'Travel Mode: ${step.travelMode ?? ""}';
- }
-
+  String _getModeDescription(RouteStep routeStep) {
+    if (routeStep.transitMode != null) {
+      return 'Transit Mode: ${routeStep.transitMode}';
+    } else if (routeStep.vehicleMode != null) {
+      return 'Vehicle Mode: ${routeStep.vehicleMode}';
+    } else {
+      return 'Travel Mode: ${routeStep.travelMode ?? ""}';
+    }
+  }
 }
