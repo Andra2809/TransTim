@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart'; // New import for formatting dates
+import 'package:trans_tim/utility/constants/string_constants.dart';
 
 import '../model/ticket.dart';
 import '../model/ticket_booking.dart';
 import '../utility/common_widgets/common_progress.dart';
 import '../utility/constants/api_constants.dart';
-import '../utility/constants/string_constants.dart';
 import '../utility/helper/date_time_utils.dart';
 import '../utility/helper/snack_bar_utils.dart';
-import '../utility/logs/logger.dart'; // New import for logging
 import '../utility/routes/route_constants.dart';
 import '../utility/services/api_provider.dart';
 import '../utility/services/user_pref.dart';
@@ -36,7 +34,6 @@ class TicketBookingController extends GetxController {
     super.onInit();
     loadArgs();
     setFarePriceListener();
-    logBookingAttempt("Initialization");
   }
 
   void loadArgs() {
@@ -55,45 +52,51 @@ class TicketBookingController extends GetxController {
   }
 
   void onTapAdd() {
-    passengerCount.value++;
-    logBookingAttempt("Increased passenger count");
+    passengerCount.value = passengerCount.value + 1;
   }
 
   void onTapSubtract() {
     if (passengerCount.value > 1) {
-      passengerCount.value--;
-      logBookingAttempt("Decreased passenger count");
+      passengerCount.value = passengerCount.value - 1;
     }
+  }
+
+  void onCreditCardModelChange({required CreditCardModel creditCardModel}) {
+    cardNumber.value = creditCardModel.cardNumber;
+    expiryDate.value = creditCardModel.expiryDate;
+    cardHolderName.value = creditCardModel.cardHolderName;
+    cvvCode.value = creditCardModel.cvvCode;
+    isCvvFocussed.value = creditCardModel.isCvvFocused;
   }
 
   void onPressButtonBookTickets() {
-    if (formKey.currentState!.validate()) {
-      bookTicket();
-    }
+    formKey.currentState!.validate() ? bookTicket() : null;
   }
 
   TicketBooking createTicketBookingObject() {
-    return TicketBooking(
-      ticketId: ticketArg.value?.ticketId,
-      userId: UserPref.getUserId(),
-      date: DateTimeUtils.currentDate(),
-      time: DateTimeUtils.currentTime(),
-      passengerCount: passengerCount.value.toString(),
-      totalAmount: totalBookingFarePrice.toStringAsFixed(2),
-    );
+    TicketBooking ticketBooking = TicketBooking();
+    ticketBooking.ticketId = ticketArg.value?.ticketId;
+    ticketBooking.userId = UserPref.getUserId();
+    ticketBooking.date = DateTimeUtils.currentDate();
+    ticketBooking.time = DateTimeUtils.currentTime();
+    ticketBooking.passengerCount = passengerCount.value.toString();
+    ticketBooking.totalAmount = totalBookingFarePrice.toStringAsFixed(2);
+    return ticketBooking;
   }
 
   Future<void> bookTicket() async {
-    logBookingAttempt("Attempting to book ticket");
     try {
       CommonProgressBar.show();
       await ApiProvider.postMethod(
         url: ApiConstants.addTicketBooking,
         obj: createTicketBookingObject().toJson(),
       ).then((response) {
-        List<Ticket> ticketList = List<Ticket>.from(response.map(Ticket.fromJson));
+        List ticketList = response.map((e) {
+          return Ticket.fromJson(e);
+        }).toList();
         if (ticketList.isNotEmpty) {
-          if (ticketList.first.status != null && ticketList.first.status != 'true') {
+          if ((ticketList.first.status != null) &&
+              ticketList.first.status != 'true') {
             onFailedResponse(ticketList.first.status.toString());
           } else {
             onSuccessResponse();
@@ -108,24 +111,17 @@ class TicketBookingController extends GetxController {
   }
 
   void onSuccessResponse() {
-    logBookingAttempt("Success");
     SnackBarUtils.normalSnackBar(
       title: "Success",
       message: "Booked successfully",
     );
-    Get.offNamedUntil(RouteConstants.homeScreen, (_) => false);
+    Get.offNamedUntil(RouteConstants.homeScreen, (route) => false);
   }
 
   void onFailedResponse(String response) {
-    logBookingAttempt("Failed: $response");
     SnackBarUtils.errorSnackBar(
       title: "Failed",
       message: "Something went wrong",
     );
-  }
-
-  void logBookingAttempt(String message) {
-    // Implement a simple logger or use a logging package
-    Logger.log("$message at ${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}");
   }
 }

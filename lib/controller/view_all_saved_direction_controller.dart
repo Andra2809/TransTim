@@ -16,6 +16,13 @@ class ViewAllSavedDirectionController extends GetxController {
     fetchSavedDirection();
   }
 
+  void onTapSavedDirectionCard({required SavedDirection savedDirection}) {
+    Get.toNamed(
+      RouteConstants.savedDirectionDetailsScreen,
+      arguments: savedDirection,
+    )?.then((value) => fetchSavedDirection());
+  }
+
   Future<void> fetchSavedDirection() async {
     try {
       isLoading(true);

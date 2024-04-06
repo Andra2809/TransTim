@@ -8,101 +8,230 @@ import '../utility/common_widgets/custom_button.dart';
 import '../utility/constants/dimens_constants.dart';
 
 class TicketBookingScreen extends StatelessWidget {
-  TicketBookingScreen({Key? key}) : super(key: key);
+  TicketBookingScreen({super.key});
 
-  final TicketBookingController _controller = Get.put(TicketBookingController());
+  final TicketBookingController _controller =
+      Get.put(TicketBookingController());
 
   @override
   Widget build(BuildContext context) {
+    context.theme;
     return CommonScaffold(
-      appBar: AppBar(
-        title: const Text('Ticket Booking'),
-      ),
-      body: Obx(() => _buildBody()),
+      appBar: AppBar(title: const Text('Ticket Booking')),
+      body: Obx(() => _body()),
       isBottomBarVisible: true,
       isLoginCompulsory: true,
-      bottomNavigationBar: _buildBottomButton(),
+      bottomNavigationBar: _bottomButton(),
     );
   }
 
-  Widget _buildBody() {
-    return _controller.ticketArg.value == null
-        ? const Center(child: Text('No Booking available'))
-        : SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(DimenConstants.layoutPadding),
-              child: Column(
-                children: [
-                  _buildPassengerCounter(),
-                  const SizedBox(height: DimenConstants.contentPadding),
-                  _buildTotalFareDisplay(),
-                  const SizedBox(height: DimenConstants.contentPadding),
-                  _buildCreditCardInput(),
-                ],
-              ),
-            ),
-          );
+  Widget _bottomButton() {
+    return Obx(
+      () {
+        return Visibility(
+          visible: _controller.ticketArg.value != null,
+          child: CustomButton(
+            isWrapContent: true,
+            margin: const EdgeInsets.all(DimenConstants.contentPadding),
+            buttonText: "Pay",
+            onButtonPressed: () => _controller.onPressButtonBookTickets(),
+          ),
+        );
+      },
+    );
   }
 
-  Widget _buildPassengerCounter() {
+  Widget _body() {
+    if (_controller.ticketArg.value == null) {
+      return const Center(child: Text('No Booking available'));
+    } else {
+      return Center(
+        child: SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.all(DimenConstants.layoutPadding),
+            child: Obx(() {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _passengerCount(),
+                  _totalFareCount(),
+                  _fakeCardWidget(),
+                ],
+              );
+            }),
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _passengerCount() {
     return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildCounterButton(Icons.remove, _controller.onTapSubtract),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: DimenConstants.mixPadding),
-          child: Obx(() => Text(
-                '${_controller.passengerCount}',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              )),
+        Expanded(
+          child: Text(
+            'Passenger: ',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: Get.textTheme.bodyLarge?.fontSize,
+            ),
+          ),
         ),
-        _buildCounterButton(Icons.add, _controller.onTapAdd),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Get.theme.colorScheme.primary),
+            borderRadius: BorderRadius.circular(DimenConstants.contentPadding),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Get.theme.colorScheme.primary,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(DimenConstants.contentPadding),
+                    bottomLeft: Radius.circular(DimenConstants.contentPadding),
+                  ),
+                ),
+                padding: const EdgeInsets.all(DimenConstants.contentPadding),
+                child: InkWell(
+                  onTap: () => _controller.onTapSubtract(),
+                  child: Icon(
+                    Icons.remove_outlined,
+                    color: Get.theme.colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: DimenConstants.contentPadding,
+                  horizontal: DimenConstants.mixPadding,
+                ),
+                child: Text(
+                  '${_controller.passengerCount.value}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: Get.textTheme.titleMedium?.fontSize,
+                  ),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Get.theme.colorScheme.primary,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(DimenConstants.contentPadding),
+                    bottomRight: Radius.circular(DimenConstants.contentPadding),
+                  ),
+                ),
+                padding: const EdgeInsets.all(DimenConstants.contentPadding),
+                child: InkWell(
+                  onTap: () => _controller.onTapAdd(),
+                  child: Icon(
+                    Icons.add_outlined,
+                    color: Get.theme.colorScheme.onPrimary,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildCounterButton(IconData icon, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(DimenConstants.contentPadding),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          borderRadius: BorderRadius.circular(DimenConstants.contentPadding),
+  Widget _totalFareCount() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: DimenConstants.contentPadding,
+        bottom: DimenConstants.contentPadding,
+        right: DimenConstants.contentPadding,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(
+              'Total: ',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: Get.textTheme.bodyLarge?.fontSize,
+              ),
+            ),
+          ),
+          Text(
+            '${_controller.symbol} ${_controller.totalBookingFarePrice.value.toStringAsFixed(2)}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: Get.textTheme.bodyLarge?.fontSize,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _fakeCardWidget() {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        CreditCardWidget(
+          height: 200,
+          cardNumber: _controller.cardNumber.value,
+          expiryDate: _controller.expiryDate.value,
+          cardHolderName: _controller.cardHolderName.value,
+          cvvCode: _controller.cvvCode.value,
+          labelValidThru: 'VALID\nTHRU',
+          obscureCardNumber: true,
+          obscureInitialCardNumber: false,
+          obscureCardCvv: true,
+          isHolderNameVisible: true,
+          isSwipeGestureEnabled: true,
+          showBackView: _controller.isCvvFocussed.value,
+          bankName: " ",
+          cardBgColor: Colors.black,
+          padding: DimenConstants.mixPadding,
+          animationDuration: const Duration(milliseconds: 1000),
+          frontCardBorder: Border.all(color: Colors.black),
+          backCardBorder: Border.all(color: Colors.black),
+          onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
+          glassmorphismConfig: Glassmorphism(
+            blurX: 7.0,
+            blurY: 10.0,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: <Color>[
+                Colors.black.withOpacity(1),
+                Colors.black.withOpacity(0.6),
+                Colors.black.withOpacity(1),
+              ],
+              stops: const <double>[0.6, 0.3, 0],
+            ),
+          ),
         ),
-        child: Icon(icon, color: Theme.of(context).colorScheme.onPrimary),
-      ),
-    );
-  }
-
-  Widget _buildTotalFareDisplay() {
-    return Obx(() => Text(
-          'Total: ${_controller.symbol}${_controller.totalBookingFarePrice.value.toStringAsFixed(2)}',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-        ));
-  }
-
-  Widget _buildCreditCardInput() {
-    return CreditCardWidget(
-      cardNumber: _controller.cardNumber.value,
-      expiryDate: _controller.expiryDate.value,
-      cardHolderName: _controller.cardHolderName.value,
-      cvvCode: _controller.cvvCode.value,
-      showBackView: _controller.isCvvFocussed.value,
-      onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
-      // Add other styling and configurations as needed
-    );
-  }
-
-  Widget _buildBottomButton() {
-    return Visibility(
-      visible: _controller.ticketArg.value != null,
-      child: CustomButton(
-        isWrapContent: true,
-        margin: const EdgeInsets.all(DimenConstants.contentPadding),
-        buttonText: "Pay",
-        onButtonPressed: _controller.onPressButtonBookTickets,
-      ),
+        CreditCardForm(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          formKey: _controller.formKey,
+          obscureCvv: true,
+          obscureNumber: true,
+          cardNumber: _controller.cardNumber.value,
+          cvvCode: _controller.cvvCode.value,
+          cardHolderName: _controller.cardHolderName.value,
+          expiryDate: _controller.expiryDate.value,
+          onCreditCardModelChange: (CreditCardModel creditCardModel) {
+            _controller.onCreditCardModelChange(
+              creditCardModel: creditCardModel,
+            );
+          },
+        ),
+      ],
     );
   }
 }
