@@ -35,7 +35,9 @@ namespace webapi_demo.Models
 
             try
             {
-                SqlDataAdapter da = new SqlDataAdapter("Select * from [Ticket]", con);
+                SqlDataAdapter da = new SqlDataAdapter("select Ticket.*, TicketBooking.ticketBookingId," +
+                   "TicketBooking.passengerCount,TicketBooking.date,TicketBooking.time from [TicketBooking] " +
+                   "LEFT JOIN [Ticket] ON Ticket.ticketId = TicketBooking.ticketId ", con);  
 
                 DataSet ds = new DataSet();
                 da.Fill(ds);

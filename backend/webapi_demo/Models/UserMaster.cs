@@ -29,6 +29,42 @@ namespace webapi_demo.Models
 
         }
 
+        public string AdminLogin(UserMasterModel userMasterModel)
+        {
+            SqlConnection con = Database.getDB();
+            string ans = "";
+
+            try
+            {
+                SqlDataAdapter da = new SqlDataAdapter("select adminId from Admin " +
+                    "where LOWER(UserMaster.emailId) = LOWER(@emailId) " +
+                    "AND UserMaster.password = @password", con);
+                da.SelectCommand.Parameters.AddWithValue("@emailId", userMasterModel.emailId);
+                da.SelectCommand.Parameters.AddWithValue("@password", userMasterModel.password);
+
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int count = ds.Tables[0].Rows.Count;
+                if (count > 0)
+                {
+                    //true
+                    ans = jm.Maker(ds);
+                }
+                else
+                {
+                    //false
+                    ans = jm.Singlevalue("false");
+                }
+            }
+            catch (Exception e)
+            {
+                ans = jm.Error(e.Message);
+            }
+            return ans;
+        }
+
+
+
         public string Register(UserMasterModel userMasterModel)
         {
             SqlConnection con = Database.getDB();
@@ -285,6 +321,37 @@ namespace webapi_demo.Models
             return ans;
         }
 
+        public string GetAllUser()
+        {
+            SqlConnection con = Database.getDB();
+            string ans = "";
+
+            try
+            {
+                SqlDataAdapter da = new SqlDataAdapter("select userId,fullName," +
+                    "emailId,contactNumber,homeAddress,workAddress,homeAddressLatLng,workAddressLatLng " +
+                    "from UserMaster", con); 
+
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+                int count = ds.Tables[0].Rows.Count;
+                if (count > 0)
+                {
+                    //true
+                    ans = jm.Maker(ds);
+                }
+                else
+                {
+                    //false
+                    ans = jm.Singlevalue("false");
+                }
+            }
+            catch (Exception e)
+            {
+                ans = jm.Error(e.Message);
+            }
+            return ans;
+        }
 
     }
 }
