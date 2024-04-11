@@ -114,7 +114,7 @@ class LoginController extends GetxController {
         latLngString: userMaster.workAddressLatLng,
       ),
     );
-    Get.offAllNamed(RouteConstants.homeScreen);
+    Get.back(closeOverlays: true, canPop: true);
   }
 
   void onLoginFailed(String? error) {

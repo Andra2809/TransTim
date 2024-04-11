@@ -112,7 +112,7 @@ class ProfileController extends GetxController {
   Future<void> logout() async {
     try {
       await UserPref.removeAllFromUserPref();
-      Get.offAllNamed(RouteConstants.loginScreen);
+      Get.offAndToNamed(RouteConstants.loginScreen);
     } catch (e) {
       CommonHelper.printDebugError(e, "logout()");
     }

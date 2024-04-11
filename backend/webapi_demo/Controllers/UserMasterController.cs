@@ -1,4 +1,4 @@
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Web.Http;
 using static webapi_demo.Models.UserMaster;
 
@@ -13,6 +13,15 @@ namespace webapi_demo.Controllers
         {
             return userMaster.InvalidRequest();
         }
+
+
+        [HttpPost]
+        [Route("api/Admin/AdminLogin")]
+        public HttpResponseMessage AdminLogin([FromBody] UserMasterModel userMasterModel)
+        {
+            return Models.Helper.getResponse(userMaster.AdminLogin(userMasterModel));
+        }
+
 
         [HttpPost]
         [Route("api/User/Register")]
@@ -29,6 +38,7 @@ namespace webapi_demo.Controllers
             return Models.Helper.getResponse(userMaster.Login(userMasterModel));
         }
 
+
         [HttpGet]
         [Route("api/User/GetUserProfile/{userId}")]
         public HttpResponseMessage GetProfileByUserId(string userId)
@@ -44,11 +54,20 @@ namespace webapi_demo.Controllers
             return Models.Helper.getResponse(userMaster.ChangePassword(userMasterModel));
         }
 
+
         [HttpPost]
         [Route("api/User/UpdateProfile")]
         public HttpResponseMessage UpdateProfile([FromBody] UserMasterModel userMasterModel)
         {
             return Models.Helper.getResponse(userMaster.UpdateProfile(userMasterModel));
-        } 
+        }
+         
+
+        [HttpGet]
+        [Route("api/Admin/GetAllUser/")]
+        public HttpResponseMessage GetAllUser()
+        {
+            return Models.Helper.getResponse(userMaster.GetAllUser());
+        }
     }
 }

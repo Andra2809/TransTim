@@ -8,21 +8,26 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../model/route_step.dart';
 import '../model/saved_direction.dart';
+import '../screen/rating_dialog_screen.dart';
 import '../utility/common_widgets/common_progress.dart';
+import '../utility/constants/api_constants.dart';
 import '../utility/constants/string_constants.dart';
 import '../utility/helper/common_helper.dart';
+import '../utility/helper/date_time_utils.dart';
 import '../utility/helper/snack_bar_utils.dart';
 import '../utility/map_helper/gps_utils.dart';
 import '../utility/map_helper/map_utils.dart';
 import '../utility/map_helper/poly_line_utils.dart';
 import '../utility/map_helper/search_view.dart';
 import '../utility/routes/route_constants.dart';
+import '../utility/services/api_provider.dart';
 import '../utility/services/user_pref.dart';
 
-class HomeController extends GetxController {
+class HomeController extends SuperController {
   RxBool isSelectLocationVisible = true.obs;
   RxBool isLoading = false.obs;
   RxBool isMapLoading = true.obs;
+  RxBool isUserLoggedIn = false.obs;
   Rxn<LatLng> startLatLng = Rxn();
   Rxn<LatLng> destinationLatLng = Rxn();
 
@@ -37,8 +42,6 @@ class HomeController extends GetxController {
   RxList<String> transitModeList = StringConstants.transitList.obs;
   RxList<String> selectedTransitList = StringConstants.transitList.obs;
 
-  // RxList<String> selectedTransitList = <String>[StringConstants.bus].obs;
-
   GoogleMapController? googleMapController;
   final Completer<GoogleMapController> _controller = Completer();
 
@@ -52,6 +55,39 @@ class HomeController extends GetxController {
     GpsUtils.requestLocation().then((value) => _fetchUserLocation());
     initUI();
     initListeners();
+    initObj();
+  }
+
+  @override
+  Future<void> onResumed() async {
+    if (UserPref.getIsRatingDone() != true && isUserLoggedIn.isFalse) {
+      String userId = UserPref.getUserId().trim();
+      isUserLoggedIn.value = !(userId == "-1" || userId == "0");
+    }
+    if (isUserLoggedIn.isTrue && UserPref.getIsRatingDone() != true) {
+      DateTime? lastSavedDateTime = UserPref.getLastSavedDateTime();
+      if (lastSavedDateTime == null) {
+        UserPref.setLastSavedDateTime(lastSavedDateTime: DateTime.now());
+      } else {
+        await checkIfRatingDone();
+        if (UserPref.getIsRatingDone() != true) {
+          Duration duration = const Duration(minutes: 5);
+          if (DateTime.now().difference(lastSavedDateTime) >= duration) {
+            UserPref.setLastSavedDateTime(lastSavedDateTime: DateTime.now());
+            while (Get.isDialogOpen == true) {
+              Get.back();
+            }
+            Get.dialog(RatingDialogScreen()).then(
+              (value) {
+                UserPref.setLastSavedDateTime(
+                  lastSavedDateTime: DateTime.now(),
+                );
+              },
+            );
+          }
+        }
+      }
+    }
   }
 
   Future<void> onMapCreated(GoogleMapController googleMapController) async {
@@ -86,6 +122,7 @@ class HomeController extends GetxController {
         );
         direction.mode = selectedModeType.value;
         direction.travelMode = selectedTransitList.join("|");
+        direction.dateTime = DateTimeUtils.currentDateTimeYMDHMS();
       }
     } catch (e) {
       direction = null;
@@ -112,6 +149,11 @@ class HomeController extends GetxController {
         SnackBarUtils.errorSnackBar(message: 'No transit mode selected');
       }
     });
+  }
+
+  void initObj() {
+    String userId = UserPref.getUserId().trim();
+    isUserLoggedIn.value = !(userId == "-1" || userId == "0");
   }
 
   void onTapActionBarIcon() {
@@ -187,11 +229,25 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<void> checkIfRatingDone() async {
+    try {
+      String userId = UserPref.getUserId();
+      List<dynamic> jsonResponse = await ApiProvider.getMethod(
+        url: ApiConstants.getRating + userId,
+      );
+      if (jsonResponse.first["api_status"] == "true" ||
+          jsonResponse.first["api_status"] == "ok") {
+        UserPref.setIsRatingDone(isRatingDone: true);
+      }
+    } catch (e) {
+      Get.printError();
+    }
+  }
+
   Future<void> _fetchUserLocation() async {
     try {
       if (startLatLng.value == null) {
         await onTapHomeAddress();
-        await onTapWorkAddress(isDestination: true);
         if (startLatLng.value == null) {
           Position? position = await GpsUtils.getCurrentLocation();
           if (position != null) {
@@ -294,6 +350,12 @@ class HomeController extends GetxController {
               }
             }
             cameraZoomIn(startLatLng.value, 12.0);
+            if (isUserLoggedIn.isTrue) {
+              ApiProvider.postMethod(
+                url: ApiConstants.addHistory,
+                obj: _createSavedDirectionObject()?.toJson(),
+              );
+            }
           } else {
             SnackBarUtils.errorSnackBar(message: 'No routes available');
           }
@@ -317,4 +379,16 @@ class HomeController extends GetxController {
       return 'Travel Mode: ${routeStep.travelMode ?? ""}';
     }
   }
+
+  @override
+  void onDetached() {}
+
+  @override
+  void onHidden() {}
+
+  @override
+  void onInactive() {}
+
+  @override
+  void onPaused() {}
 }
