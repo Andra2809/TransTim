@@ -11,6 +11,7 @@ class CommonProgressBar {
 
   static void show() {
     try {
+      hide();
       if (context != null && context is BuildContext) {
         _progressOverlayEntry = _createdProgressEntry(context!);
         Overlay.of(context!).insert(_progressOverlayEntry!);

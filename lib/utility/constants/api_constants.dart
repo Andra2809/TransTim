@@ -22,4 +22,11 @@ class ApiConstants {
   static const String deleteDirection = "$baseDirection/DeleteSavedDirection/";
   static const String getDirectionByUserId =
       "$baseDirection/GetUserSavedDirection/";
+
+  static const String baseRatings = "$baseUrl/api/UserAppRating";
+  static const String addRating = "$baseRatings/AddUserAppRating/";
+  static const String getRating = "$baseRatings/GetUserAppRatingByUserId/";
+
+  static const String baseHistory = "$baseUrl/api/SearchHistory";
+  static const String addHistory = "$baseHistory/AddSearchHistory/";
 }

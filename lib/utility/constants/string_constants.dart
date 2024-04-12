@@ -24,6 +24,8 @@ class StringConstants {
   static const String homeAddressLatLng = "homeAddressLatLng";
   static const String workAddress = "workAddress";
   static const String workAddressLatLng = "workAddressLatLng";
+  static const String lastSavedDateTime = "lastSavedDateTime";
+  static const String isRatingDone = "isRatingDone";
 
   //DIRECTION_MODES
   static const String driving = "Driving";

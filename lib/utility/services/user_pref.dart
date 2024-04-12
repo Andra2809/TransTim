@@ -55,6 +55,19 @@ class UserPref {
     }
   }
 
+  static void setLastSavedDateTime({required DateTime? lastSavedDateTime}) {
+    if (lastSavedDateTime != null) {
+      String dateString = lastSavedDateTime.toIso8601String();
+      getStorage.write(StringConstants.lastSavedDateTime, dateString);
+    }
+  }
+
+  static void setIsRatingDone({required bool? isRatingDone}) {
+    if (isRatingDone != null) {
+      getStorage.write(StringConstants.isRatingDone, isRatingDone);
+    }
+  }
+
   static String getUserId() {
     try {
       return getStorage.read(StringConstants.userId) ?? "-1";
@@ -107,6 +120,24 @@ class UserPref {
       CommonHelper.printDebugError(e, "UserPref");
     }
     return null;
+  }
+
+  static DateTime? getLastSavedDateTime() {
+    try {
+      return DateTime.parse(getStorage.read(StringConstants.lastSavedDateTime));
+    } catch (e) {
+      CommonHelper.printDebugError(e, "UserPref");
+    }
+    return null;
+  }
+
+  static bool? getIsRatingDone() {
+    try {
+      return getStorage.read(StringConstants.isRatingDone);
+    } catch (e) {
+      CommonHelper.printDebugError(e, "UserPref");
+    }
+    return false;
   }
 
   static removeAllFromUserPref() async {

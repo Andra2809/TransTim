@@ -9,14 +9,14 @@ class CommonDialog extends StatelessWidget {
   final Function()? onNegativeRedBtnClicked, onPositiveButtonClicked;
 
   const CommonDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.contentWidget,
     required this.positiveDialogBtnText,
     this.negativeRedDialogBtnText,
     this.onPositiveButtonClicked,
     this.onNegativeRedBtnClicked,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

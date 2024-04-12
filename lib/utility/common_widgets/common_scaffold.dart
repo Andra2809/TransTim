@@ -14,8 +14,9 @@ class CommonScaffold extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final Widget body;
   final bool? isLoginCompulsory;
+  RxBool isUserIdEmpty = RxBool(false);
 
-  const CommonScaffold({
+  CommonScaffold({
     super.key,
     required this.body,
     this.appBar,
@@ -30,10 +31,9 @@ class CommonScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     context.theme;
 
-    bool isUserIdEmpty = false;
     if (isLoginCompulsory == true) {
       String userId = UserPref.getUserId();
-      isUserIdEmpty = userId == "-1" || userId == "0" || userId.isEmpty;
+      isUserIdEmpty.value = userId == "-1" || userId == "0" || userId.isEmpty;
     }
 
     return Scaffold(
@@ -42,13 +42,13 @@ class CommonScaffold extends StatelessWidget {
       appBar: appBar,
       floatingActionButton: floatingActionButton,
       body: GestureDetector(
-        child: isUserIdEmpty ? _loginToContinue() : body,
+        child: Obx(() => isUserIdEmpty.value ? _loginToContinue() : body),
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       ),
       bottomNavigationBar: isBottomBarVisible == true
           ? bottomNavigationBar == null
               ? _bottomBar()
-              : !isUserIdEmpty
+              : !isUserIdEmpty.value
                   ? bottomNavigationBar
                   : null
           : null,
@@ -72,7 +72,17 @@ class CommonScaffold extends StatelessWidget {
             width: Get.width / 3,
             margin: const EdgeInsets.all(DimenConstants.contentPadding),
             buttonText: "Login Now",
-            onButtonPressed: () => Get.toNamed(RouteConstants.loginScreen),
+            onButtonPressed: () {
+              Get.toNamed(RouteConstants.loginScreen)?.then(
+                (value) {
+                  if (isLoginCompulsory == true) {
+                    String userId = UserPref.getUserId();
+                    isUserIdEmpty.value =
+                        userId == "-1" || userId == "0" || userId.isEmpty;
+                  }
+                },
+              );
+            },
           )
         ],
       ),

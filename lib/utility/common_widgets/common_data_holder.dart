@@ -16,7 +16,7 @@ class CommonDataHolder extends StatelessWidget {
   final Future<void> Function()? onRefresh;
 
   const CommonDataHolder({
-    Key? key,
+    super.key,
     required this.controller,
     required this.dataList,
     required this.widget,
@@ -25,7 +25,7 @@ class CommonDataHolder extends StatelessWidget {
     this.scrollDirection,
     this.showNoResultFound,
     this.isRefreshEnabled,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +111,7 @@ class CommonDataHolder extends StatelessWidget {
 }
 
 class CustomNoResultScreen extends StatelessWidget {
-  const CustomNoResultScreen({Key? key, this.noResultText}) : super(key: key);
+  const CustomNoResultScreen({super.key, this.noResultText});
   final String? noResultText;
 
   @override
