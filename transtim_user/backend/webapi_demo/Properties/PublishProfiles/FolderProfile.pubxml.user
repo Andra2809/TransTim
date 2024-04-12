@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>E:\SourceCode\ChangesBySohail\WebService\publishVersion\fFuelDelivery</_PublishTargetUrl>
+    <History>True|2022-08-11T06:35:42.7538082Z;True|2022-08-09T17:40:44.4042334+05:30;True|2022-08-09T17:40:28.8126206+05:30;True|2022-08-09T17:31:57.1107632+05:30;True|2022-04-05T12:37:28.2159979+05:30;True|2022-04-04T15:20:58.1077060+05:30;True|2022-04-04T13:36:10.0736196+05:30;True|2022-04-01T17:29:11.8059705+05:30;True|2022-04-01T13:08:57.8997193+05:30;True|2022-04-01T12:52:27.1189373+05:30;True|2022-04-01T12:45:27.9661146+05:30;True|2022-04-01T12:24:44.0932994+05:30;True|2022-04-01T11:38:59.2030751+05:30;True|2022-03-31T18:42:29.8319368+05:30;True|2022-03-31T18:38:08.9849944+05:30;True|2022-03-31T17:37:45.8940934+05:30;True|2022-03-31T13:19:09.9843208+05:30;True|2022-03-31T12:10:12.0730292+05:30;True|2022-03-30T17:48:40.1730417+05:30;True|2022-03-28T18:10:55.6983660+05:30;True|2022-03-28T18:08:02.3354737+05:30;True|2022-03-28T17:38:48.3887140+05:30;True|2022-03-28T15:30:31.7308838+05:30;True|2022-03-26T16:49:41.3927882+05:30;</History>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="ApplicationInsights.config">
+      <publishTime>05/08/2022 19:31:54</publishTime>
+    </File>
+    <File Include="bin/ApplicationInsights.config">
+      <publishTime>05/08/2022 19:31:54</publishTime>
+    </File>
+    <File Include="bin/JsonServices.dll">
+      <publishTime>03/02/2016 20:06:30</publishTime>
+    </File>
+    <File Include="bin/JsonServices.Web.dll">
+      <publishTime>03/02/2016 20:06:30</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
+      <publishTime>07/12/2015 19:04:38</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.DependencyCollector.dll">
+      <publishTime>10/03/2016 14:26:18</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.PerfCounterCollector.dll">
+      <publishTime>10/03/2016 14:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.ServerTelemetryChannel.dll">
+      <publishTime>09/03/2016 12:00:14</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.Web.dll">
+      <publishTime>10/03/2016 14:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.WindowsServer.dll">
+      <publishTime>10/03/2016 14:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ApplicationInsights.dll">
+      <publishTime>09/03/2016 11:57:34</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>04/23/2012 15:23:58</publishTime>
+    </File>
+    <File Include="bin/MySql.Data.dll">
+      <publishTime>11/20/2017 11:35:20</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>03/08/2014 20:33:56</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>01/28/2015 04:02:42</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>01/28/2015 04:02:54</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>01/28/2015 04:03:46</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>01/28/2015 04:02:18</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>01/28/2015 04:02:32</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.Deployment.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.Webpages.Razor.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/webapi_demo.dll">
+      <publishTime>08/11/2022 12:05:41</publishTime>
+    </File>
+    <File Include="bin/webapi_demo.pdb">
+      <publishTime>08/11/2022 12:05:41</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>10/28/2019 11:48:08</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>10/28/2019 18:21:33</publishTime>
+    </File>
+    <File Include="scripts/ai.0.22.9-build00167.js">
+      <publishTime>05/08/2022 19:31:53</publishTime>
+    </File>
+    <File Include="scripts/ai.0.22.9-build00167.min.js">
+      <publishTime>05/08/2022 19:31:53</publishTime>
+    </File>
+    <File Include="Views/web.config">
+      <publishTime>10/28/2019 11:47:47</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>08/11/2022 12:05:42</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

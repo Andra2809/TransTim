@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAANmgcc4g8W0CgkdKui9OxQQAAAAACAAAAAAAQZgAAAAEAACAAAAAN7hXTI73fCSi5GKnFdP0GtgIzZXuktRQddgyXs1UhvwAAAAAOgAAAAAIAACAAAACf40i+sc5gwrNQOR3EUbK5en/qJqc+FRmLGKHDDf2BESAAAAAZvMdM83Z4q1u6hWqM5067X404GKNMp3by+oft1TocSkAAAAAhRF4scbMGc2NtWOicBNKX2MVRFxEbG7VjCFwcit9bjJjNiHjWXPXbURTB6HFA3TGsogOCPOhr5uaiuBT4Wv6O</EncryptedPassword>
+    <_PublishTargetUrl>ftp://182.50.132.56</_PublishTargetUrl>
+    <History>True|2022-09-26T12:53:04.4132246Z;True|2022-09-26T18:15:44.6516162+05:30;True|2022-09-26T18:10:02.7450165+05:30;True|2022-09-26T17:54:58.4237530+05:30;True|2022-09-26T17:48:40.4015108+05:30;True|2022-09-26T17:45:00.3630601+05:30;False|2022-09-26T17:43:38.6723229+05:30;True|2022-09-26T17:24:04.2753031+05:30;True|2022-09-26T16:45:29.1932901+05:30;True|2022-09-26T15:54:34.7775961+05:30;True|2022-09-26T15:51:35.7609638+05:30;True|2022-09-26T15:42:42.2520534+05:30;True|2022-09-26T13:22:58.0409602+05:30;True|2022-09-26T12:17:23.5198967+05:30;True|2022-09-23T16:42:59.3198053+05:30;True|2022-09-21T13:33:40.0576922+05:30;True|2022-09-21T13:32:27.8808377+05:30;True|2022-09-21T13:14:22.5453808+05:30;True|2022-09-21T12:50:42.5711601+05:30;True|2022-09-20T18:25:17.1083830+05:30;True|2022-09-20T18:15:58.5822504+05:30;True|2022-09-20T17:19:54.4638837+05:30;False|2022-09-20T16:59:53.4036797+05:30;True|2022-09-20T16:18:16.5113029+05:30;True|2022-09-20T16:13:04.9530540+05:30;True|2022-09-20T16:09:56.2882905+05:30;True|2022-09-20T13:45:28.6483064+05:30;True|2022-09-20T13:29:35.3936436+05:30;True|2022-09-20T13:13:01.9057820+05:30;True|2022-09-20T12:59:36.6666425+05:30;True|2022-09-16T18:47:34.7700627+05:30;True|2022-09-16T18:32:56.9360778+05:30;False|2022-09-16T18:31:46.1092775+05:30;True|2022-09-16T18:31:08.3472974+05:30;True|2022-09-16T17:59:41.8045941+05:30;True|2022-09-12T19:04:22.6765671+05:30;True|2022-09-12T17:53:34.6799618+05:30;True|2022-09-12T17:47:58.0805443+05:30;True|2022-09-12T13:17:21.7525402+05:30;False|2022-09-12T13:15:20.6602106+05:30;True|2022-09-10T18:21:44.5194065+05:30;True|2022-09-10T18:07:46.6530123+05:30;True|2022-09-08T16:31:19.3571616+05:30;True|2022-09-08T16:10:13.4743099+05:30;True|2022-09-08T16:02:34.2581768+05:30;True|2022-09-07T17:50:07.0589775+05:30;True|2022-09-07T17:48:31.0089976+05:30;</History>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="ApplicationInsights.config">
+      <publishTime>08/05/2022 19:31:54</publishTime>
+    </File>
+    <File Include="bin/ApplicationInsights.config">
+      <publishTime>08/05/2022 19:31:54</publishTime>
+    </File>
+    <File Include="bin/JsonServices.dll">
+      <publishTime>02/03/2016 20:06:30</publishTime>
+    </File>
+    <File Include="bin/JsonServices.Web.dll">
+      <publishTime>02/03/2016 20:06:30</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
+      <publishTime>12/07/2015 19:04:38</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.DependencyCollector.dll">
+      <publishTime>03/10/2016 14:26:18</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.PerfCounterCollector.dll">
+      <publishTime>03/10/2016 14:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.ServerTelemetryChannel.dll">
+      <publishTime>03/09/2016 12:00:14</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.Web.dll">
+      <publishTime>03/10/2016 14:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.AI.WindowsServer.dll">
+      <publishTime>03/10/2016 14:26:26</publishTime>
+    </File>
+    <File Include="bin/Microsoft.ApplicationInsights.dll">
+      <publishTime>03/09/2016 11:57:34</publishTime>
+    </File>
+    <File Include="bin/Microsoft.Web.Infrastructure.dll">
+      <publishTime>04/23/2012 15:23:58</publishTime>
+    </File>
+    <File Include="bin/MySql.Data.dll">
+      <publishTime>11/20/2017 11:35:20</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>08/03/2014 20:33:56</publishTime>
+    </File>
+    <File Include="bin/System.Net.Http.Formatting.dll">
+      <publishTime>01/28/2015 04:02:42</publishTime>
+    </File>
+    <File Include="bin/System.Web.Helpers.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.dll">
+      <publishTime>01/28/2015 04:02:54</publishTime>
+    </File>
+    <File Include="bin/System.Web.Http.WebHost.dll">
+      <publishTime>01/28/2015 04:03:46</publishTime>
+    </File>
+    <File Include="bin/System.Web.Mvc.dll">
+      <publishTime>01/28/2015 04:02:18</publishTime>
+    </File>
+    <File Include="bin/System.Web.Razor.dll">
+      <publishTime>01/28/2015 04:02:32</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Deployment.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/System.Web.WebPages.Razor.dll">
+      <publishTime>01/28/2015 04:04:30</publishTime>
+    </File>
+    <File Include="bin/webapi_demo.dll">
+      <publishTime>09/26/2022 18:22:33</publishTime>
+    </File>
+    <File Include="bin/webapi_demo.pdb">
+      <publishTime>09/26/2022 18:22:33</publishTime>
+    </File>
+    <File Include="Global.asax">
+      <publishTime>10/28/2019 11:48:08</publishTime>
+    </File>
+    <File Include="scripts/ai.0.22.9-build00167.js">
+      <publishTime>08/05/2022 19:31:53</publishTime>
+    </File>
+    <File Include="scripts/ai.0.22.9-build00167.min.js">
+      <publishTime>08/05/2022 19:31:53</publishTime>
+    </File>
+    <File Include="Views/web.config">
+      <publishTime>10/28/2019 11:47:47</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>09/26/2022 12:16:57</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
