@@ -4,16 +4,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82e6dc61-bf8d-45ee-8204-d14b6d7a5130" name="Changes" comment="initialization of Admin application and utility folder">
-      <change beforePath="$PROJECT_DIR$/.idea/trans_tim.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/trans_tim.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transtim_user/lib/utility/map_helper/map_icon.dart" beforeDir="false" afterPath="$PROJECT_DIR$/transtim_user/lib/utility/map_helper/map_icon.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/transtim_user/lib/utility/map_helper/poly_line_utils.dart" beforeDir="false" afterPath="$PROJECT_DIR$/transtim_user/lib/utility/map_helper/poly_line_utils.dart" afterDir="false" />
-    </list>
+    <list default="true" id="82e6dc61-bf8d-45ee-8204-d14b6d7a5130" name="Changes" comment="Admin view search history for each user" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
@@ -75,13 +75,31 @@
       <option name="project" value="LOCAL" />
       <updated>1712954100445</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Admin login and homepage + refactoring">
+      <option name="closed" value="true" />
+      <created>1713000324227</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1713000324227</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Admin view search history for each user">
+      <option name="closed" value="true" />
+      <created>1713000630689</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1713000630689</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="restructuring folders" />
     <MESSAGE value="restructuring" />
     <MESSAGE value="initialization of Admin application and utility folder" />
-    <option name="LAST_COMMIT_MESSAGE" value="initialization of Admin application and utility folder" />
+    <MESSAGE value="Admin login and homepage + refactoring" />
+    <MESSAGE value="Admin view search history for each user" />
+    <option name="LAST_COMMIT_MESSAGE" value="Admin view search history for each user" />
   </component>
 </project>
