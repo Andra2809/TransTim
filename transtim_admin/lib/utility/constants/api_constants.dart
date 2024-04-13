@@ -5,5 +5,8 @@ class ApiConstants {
   static const String baseUser = "$baseUrl/api/Admin";
   static const String getAllUser = "$baseUser/GetAllUser/";
 
+static const String baseSearchHistory = "$baseUrl/api/SearchHistory";
+  static const String getSearchHistoryByUser =
+      "$baseSearchHistory/GetUserSearchHistory/";
 
 }
