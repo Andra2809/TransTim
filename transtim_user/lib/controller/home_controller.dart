@@ -30,6 +30,7 @@ class HomeController extends SuperController {
   RxBool isUserLoggedIn = false.obs;
   Rxn<LatLng> startLatLng = Rxn();
   Rxn<LatLng> destinationLatLng = Rxn();
+  Rxn<Position> currentPosition = Rxn();
 
   RxList<Marker> markerList = <Marker>[].obs;
   RxList<RouteStep> routeStepList = <RouteStep>[].obs;
@@ -156,6 +157,23 @@ class HomeController extends SuperController {
     isUserLoggedIn.value = !(userId == "-1" || userId == "0");
   }
 
+  Future<void> onTapStartLocPrefixIcon() async {
+    try {
+      if (currentPosition.value != null) {
+        Position position = currentPosition.value!;
+        startLatLng.value = LatLng(position.latitude, position.longitude);
+        if (startLatLng.value != null) {
+          String? address = await MapUtils.getAddressFromLatLng(
+            latLng: startLatLng.value,
+          );
+          etStartLocation.text = address ?? "";
+        }
+      }
+    } catch (e) {
+      Get.printError();
+    }
+  }
+
   void onTapActionBarIcon() {
     isSelectLocationVisible.value = !isSelectLocationVisible.value;
   }
@@ -248,9 +266,19 @@ class HomeController extends SuperController {
     try {
       if (startLatLng.value == null) {
         await onTapHomeAddress();
+        currentPosition.value = await GpsUtils.getCurrentLocation();
+        LocationSettings locationSettings = const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 10,
+        );
+        Geolocator.getPositionStream(
+          locationSettings: locationSettings,
+        ).listen((Position newPosition) {
+          currentPosition.value = newPosition;
+        });
         if (startLatLng.value == null) {
-          Position? position = await GpsUtils.getCurrentLocation();
-          if (position != null) {
+          if (currentPosition.value != null) {
+            Position position = currentPosition.value!;
             startLatLng.value = LatLng(position.latitude, position.longitude);
             if (startLatLng.value != null) {
               String? address = await MapUtils.getAddressFromLatLng(

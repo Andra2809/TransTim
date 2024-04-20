@@ -86,6 +86,7 @@ class HomeScreen extends StatelessWidget {
                   prefixIcon: Icons.location_searching_outlined,
                   textEditingController: _controller.etStartLocation,
                   onTapField: () => _controller.onTapSearchCity(),
+                  onTapPrefixIcon: () => _controller.onTapStartLocPrefixIcon(),
                 ),
               ),
               _selectHomeOrAddressWidget(),

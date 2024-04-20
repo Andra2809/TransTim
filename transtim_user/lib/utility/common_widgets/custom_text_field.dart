@@ -22,6 +22,7 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validatorFunction;
   final void Function()? onTapField;
   final bool? isWrapContent;
+  final GestureTapCallback? onTapPrefixIcon;
 
   const CustomTextField({
     Key? key,
@@ -43,6 +44,7 @@ class CustomTextField extends StatelessWidget {
     this.validatorFunction,
     this.onTapField,
     this.isWrapContent,
+    this.onTapPrefixIcon,
   }) : super(key: key);
 
   @override
@@ -123,9 +125,12 @@ class CustomTextField extends StatelessWidget {
         contentPadding: height != null ? EdgeInsets.zero : null,
         labelText: hintText,
         prefixIcon: prefixIcon != null
-            ? Icon(
-                prefixIcon,
-                color: Get.isDarkMode ? Colors.white : ColorConstants.dark,
+            ? GestureDetector(
+                onTap: onTapPrefixIcon, // Add this line
+                child: Icon(
+                  prefixIcon,
+                  color: Get.isDarkMode ? Colors.white : ColorConstants.dark,
+                ),
               )
             : null,
         suffixIcon: suffixIcon != null

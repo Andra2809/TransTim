@@ -9,94 +9,139 @@ import '../../utility/constants/dimens_constants.dart';
 import '../controller/change_password_controller.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
-  ChangePasswordScreen({Key? key}) : super(key: key);
+  ChangePasswordScreen({super.key});
 
-  final ChangePasswordController _controller = Get.put(ChangePasswordController());
+  final ChangePasswordController _controller =
+      Get.put(ChangePasswordController());
 
   @override
   Widget build(BuildContext context) {
+    context.theme;
     return CommonScaffold(
-      appBar: AppBar(title: const Text('Change Password')),
-      body: SafeArea(child: _passwordChangeForm()),
-    );
+        appBar: AppBar(title: const Text('Change Password')),
+        body: CommonScaffold(body: SafeArea(child: Center(child: _body()))));
   }
 
-  Widget _passwordChangeForm() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(DimenConstants.layoutPadding),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _passwordDetailsCard(),
-        ],
-      ),
-    );
-  }
-
-  Widget _passwordDetailsCard() {
-    return Card(
-      margin: const EdgeInsets.all(DimenConstants.contentPadding),
-      elevation: DimenConstants.cardElevation,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(DimenConstants.mainCardRadius),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(DimenConstants.layoutPadding),
-        child: Form(
-          key: _controller.formKey,
+  Widget _body() {
+    return Container(
+      margin: const EdgeInsets.all(DimenConstants.layoutPadding),
+      child: Center(
+        child: SingleChildScrollView(
           child: Column(
-            children: [
-              _oldPasswordField(),
-              _newPasswordField(),
-              _confirmNewPasswordField(),
-              _submitButton(),
-            ],
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [_enterPasswordDetailsCard()],
           ),
         ),
       ),
     );
   }
 
-  Widget _oldPasswordField() {
-    return CustomHiddenTextField(
-      textEditingController: _controller.etOldPassword,
-      hintText: "Old Password",
-      prefixIcon: Icons.key_outlined,
-      currentFocusNode: _controller.etOldPasswordFocusNode,
-      nextFocusNode: _controller.etNewPasswordFocusNode,
-      validatorFunction: _controller.validateOldPassword,
+  Widget _enterPasswordDetailsCard() {
+    return Card(
+      margin: const EdgeInsets.all(DimenConstants.contentPadding),
+      elevation: DimenConstants.cardElevation,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(DimenConstants.mainCardRadius),
+      ),
+      child: Container(
+        padding: const EdgeInsets.only(
+          top: DimenConstants.layoutPadding,
+          bottom: DimenConstants.layoutPadding,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _passwordDetailsCardTextFields(),
+            _passwordDetailsCardButtons(),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _newPasswordField() {
-    return CustomHiddenTextField(
-      textEditingController: _controller.etNewPassword,
-      hintText: "New Password",
-      prefixIcon: Icons.password_outlined,
-      currentFocusNode: _controller.etNewPasswordFocusNode,
-      nextFocusNode: _controller.etConfirmNewPasswordFocusNode,
-      validatorFunction: _controller.validateNewPassword,
+  Widget _passwordDetailsCardTextFields() {
+    return Padding(
+      padding: const EdgeInsets.all(DimenConstants.contentPadding),
+      child: Form(
+        key: _controller.formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CustomHiddenTextField(
+              textEditingController: _controller.etOldPassword,
+              hintText: "Old Password",
+              prefixIcon: Icons.key_outlined,
+              currentFocusNode: _controller.etOldPasswordFocusNode,
+              nextFocusNode: _controller.etNewPasswordFocusNode,
+              validatorFunction: (value) {
+                if (value!.isEmpty) {
+                  return 'Old Password Cannot Be Empty';
+                }
+                return null;
+              },
+            ),
+            CustomHiddenTextField(
+              textEditingController: _controller.etNewPassword,
+              hintText: "New Password",
+              prefixIcon: Icons.password_outlined,
+              currentFocusNode: _controller.etNewPasswordFocusNode,
+              nextFocusNode: _controller.etConfirmNewPasswordFocusNode,
+              validatorFunction: (value) {
+                if (value!.isEmpty) {
+                  return 'New Password Cannot Be Empty';
+                }
+                return null;
+              },
+            ),
+            CustomHiddenTextField(
+              textEditingController: _controller.etConfirmNewPassword,
+              hintText: "Confirm New Password",
+              prefixIcon: Icons.password_outlined,
+              isObscureTextIconDisabled: true,
+              currentFocusNode: _controller.etConfirmNewPasswordFocusNode,
+              validatorFunction: (value) {
+                if (value!.isEmpty) {
+                  return 'Field Cannot Be Empty';
+                }
+                String pass = _controller.etNewPassword.text.toString().trim();
+                if (value.toString().trim() != pass) {
+                  return "Password doesn't match";
+                }
+                return null;
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _confirmNewPasswordField() {
-    return CustomHiddenTextField(
-      textEditingController: _controller.etConfirmNewPassword,
-      hintText: "Confirm New Password",
-      prefixIcon: Icons.password_outlined,
-      isObscureTextIconDisabled: true,
-      currentFocusNode: _controller.etConfirmNewPasswordFocusNode,
-      validatorFunction: _controller.validateConfirmPassword,
-    );
-  }
-
-  Widget _submitButton() {
+  Widget _passwordDetailsCardButtons() {
     return CustomButton(
       buttonText: "Submit",
-      padding: const EdgeInsets.symmetric(vertical: DimenConstants.contentPadding),
-      onButtonPressed: () => _controller.submitPasswordChange(),
+      padding: const EdgeInsets.all(DimenConstants.contentPadding),
+      onButtonPressed: () => {
+        if (_controller.formKey.currentState!.validate())
+          Get.dialog(_confirmChangePasswordDialog()),
+      },
+    );
+  }
+
+  Widget _confirmChangePasswordDialog() {
+    return CommonDialog(
+      title: "Change Password",
+      contentWidget: const Text(
+        "\nAre you sure you want to change password ?"
+        " You will be log out of the app once you change the password.\n",
+      ),
+      negativeRedDialogBtnText: "Confirm",
+      positiveDialogBtnText: "Back",
+      onNegativeRedBtnClicked: () => _controller.onConfirmChangePassword(),
     );
   }
 }

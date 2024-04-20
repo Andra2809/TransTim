@@ -11,8 +11,6 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-RxString userLoggedInId = '0'.obs;
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
