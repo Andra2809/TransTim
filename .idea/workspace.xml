@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82e6dc61-bf8d-45ee-8204-d14b6d7a5130" name="Changes" comment="Admin view search history for each user" />
+    <list default="true" id="82e6dc61-bf8d-45ee-8204-d14b6d7a5130" name="Changes" comment="Admin view all tickets purchased and ratings from user" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -91,7 +91,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713000630689</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Admin view all tickets purchased and ratings from user">
+      <option name="closed" value="true" />
+      <created>1713000812685</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1713000812685</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -100,6 +108,7 @@
     <MESSAGE value="initialization of Admin application and utility folder" />
     <MESSAGE value="Admin login and homepage + refactoring" />
     <MESSAGE value="Admin view search history for each user" />
-    <option name="LAST_COMMIT_MESSAGE" value="Admin view search history for each user" />
+    <MESSAGE value="Admin view all tickets purchased and ratings from user" />
+    <option name="LAST_COMMIT_MESSAGE" value="Admin view all tickets purchased and ratings from user" />
   </component>
 </project>

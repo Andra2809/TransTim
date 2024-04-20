@@ -54,7 +54,7 @@ class LoginController extends GetxController {
       if (jsonResponse.isNotEmpty) {
         final Map<String, dynamic> userData = jsonResponse.first;
         final String? adminId = userData['adminId'];
-        final String? status = userData['status'];
+        final String? status = userData['api_status'];
         if (status == "ok" || status == "true") {
           onLoginSuccess(adminId);
         } else {

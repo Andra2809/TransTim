@@ -20,6 +20,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Home"),
         centerTitle: true,
+        actions: [_actionWidget()],
       ),
       body: Obx(
         () {
@@ -34,6 +35,25 @@ class HomeScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _actionWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: DimenConstants.contentPadding,
+      ),
+      child: InkWell(
+        onTap: () => _controller.onPressLogoutIcon(),
+        child: const Text(
+          'Logout',
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

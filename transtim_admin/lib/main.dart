@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:trans_tim_admin/utility/services/user_pref.dart';
 
 import 'utility/constants/string_constants.dart';
 import 'utility/routes/route_constants.dart';
@@ -41,7 +42,9 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         colorSchemeSeed: Colors.blueAccent,
       ),
-      initialRoute: RouteConstants.homeScreen,
+      initialRoute: UserPref.getIsLoggedIn()
+          ? RouteConstants.homeScreen
+          : RouteConstants.loginScreen,
       getPages: RouteScreens.routes,
     );
   }
