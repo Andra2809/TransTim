@@ -47,6 +47,7 @@ class ViewRatingsScreen extends StatelessWidget {
   }
 
   Widget _averageRatingCount() {
+    double averageRating = _calculateAverageRating();
     return Visibility(
       visible: _controller.ratingList.isNotEmpty,
       child: Card(
@@ -73,12 +74,12 @@ class ViewRatingsScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        _controller.ratingList.firstOrNull?.ratingCount ?? "0",
+                        averageRating.toStringAsFixed(1),
                         style: TextStyle(
                           fontSize: Get.textTheme.titleLarge?.fontSize,
                         ),
                       ),
-                      Text("Average Rating"),
+                      const Text("Average Rating"),
                     ],
                   ),
                 ),
@@ -88,6 +89,18 @@ class ViewRatingsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  double _calculateAverageRating() {
+    if (_controller.ratingList.isEmpty) {
+      return 0.0;
+    }
+    double sum = 0.0;
+    for (final rating in _controller.ratingList) {
+      double ratingValue = double.tryParse(rating.ratingCount ?? '0') ?? 0.0;
+      sum += ratingValue;
+    }
+    return sum / _controller.ratingList.length;
   }
 
   Widget _dataHolderWidget() {
