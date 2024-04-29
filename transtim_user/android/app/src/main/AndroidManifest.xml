@@ -9,7 +9,7 @@
     </queries>
 
     <application
-        android:label="TransTim"
+        android:label="TransitTm"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

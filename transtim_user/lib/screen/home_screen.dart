@@ -11,7 +11,7 @@ import '../utility/common_widgets/custom_text_field.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
-  final HomeController _controller = Get.put(HomeController());
+  final HomeController _controller = Get.put(HomeController(), permanent: true);
 
   @override
   Widget build(BuildContext context) {

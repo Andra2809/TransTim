@@ -37,7 +37,7 @@ class RatingDialogScreen extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Enjoying ${StringConstants.appName}?',
+            'Enjoying our application?',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: Get.textTheme.titleLarge?.fontSize,

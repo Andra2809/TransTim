@@ -9,6 +9,7 @@ import '../utility/common_widgets/common_progress.dart';
 import '../utility/constants/api_constants.dart';
 import '../utility/helper/date_time_utils.dart';
 import '../utility/helper/snack_bar_utils.dart';
+import '../utility/routes/route_constants.dart';
 import '../utility/services/api_provider.dart';
 import '../utility/services/user_pref.dart';
 
@@ -114,7 +115,8 @@ class TicketBookingController extends GetxController {
       title: "Success",
       message: "Booked successfully",
     );
-    // Get.offNamedUntil(RouteConstants.homeScreen, (route) => false);
+    Get.offNamedUntil(RouteConstants.homeScreen, (route) => false);
+    //Get.offNamedUntil(RouteConstants.ticketSummaryScreen, (route) => false);
     Get.back(closeOverlays: true, canPop: true);
   }
 

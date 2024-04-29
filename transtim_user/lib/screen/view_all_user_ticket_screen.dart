@@ -44,6 +44,8 @@ class ViewAllUserTicketScreen extends StatelessWidget {
   }
 
   Widget _dataHolderWidget() {
+    List<TicketBooking> reversedList =
+        List.from(_controller.ticketBookingList.reversed);
     return Container(
       constraints: BoxConstraints(minHeight: Get.height / 1.2),
       child: ListView.builder(
@@ -52,7 +54,7 @@ class ViewAllUserTicketScreen extends StatelessWidget {
         scrollDirection: Axis.vertical,
         itemCount: _controller.ticketBookingList.length,
         itemBuilder: (context, index) {
-          return _recentTicketCard(_controller.ticketBookingList[index]);
+          return _recentTicketCard(reversedList[index]);
         },
       ),
     );

@@ -19,8 +19,6 @@ class PolyLineUtils {
     try {
       String apiKey = StringConstants.googleMapApiKey;
       String? mode = travelMode?.toLowerCase();
-      String bicycle = StringConstants.bicycling.toLowerCase();
-      // mode = mode == bicycle ? 'bicycling' : mode;
       mode = mode ?? 'driving';
       String url;
 
@@ -55,20 +53,6 @@ class PolyLineUtils {
           routeStep.totalDuration = totalDuration;
           routeStep.totalDurationInSeconds = totalDistanceInSec;
           routeSteps.add(routeStep);
-          // if (travelMode == StringConstants.bicycling) {
-          //   String? travelMode = step['travel_mode'];
-          //   if (travelMode?.toLowerCase() == 'bicycling') {
-          //     RouteStep routeStep = RouteStep.fromMap(step);
-          //     routeStep.totalDistance = totalDistance;
-          //     routeStep.totalDuration = totalDuration;
-          //     routeSteps.add(routeStep);
-          //   }
-          // } else {
-          //   RouteStep routeStep = RouteStep.fromMap(step);
-          //   routeStep.totalDistance = totalDistance;
-          //   routeStep.totalDuration = totalDuration;
-          //   routeSteps.add(routeStep);
-          // }
         }
       }
     } catch (e) {
