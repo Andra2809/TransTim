@@ -37,8 +37,8 @@ namespace webapi_demo.Models
             try
             {
                 SqlDataAdapter da = new SqlDataAdapter("select adminId from Admin " +
-                    "where LOWER(UserMaster.emailId) = LOWER(@emailId) " +
-                    "AND UserMaster.password = @password", con);
+                    "where LOWER(Admin.emailId) = LOWER(@emailId) " +
+                    "AND Admin.password = @password", con);
                 da.SelectCommand.Parameters.AddWithValue("@emailId", userMasterModel.emailId);
                 da.SelectCommand.Parameters.AddWithValue("@password", userMasterModel.password);
 
