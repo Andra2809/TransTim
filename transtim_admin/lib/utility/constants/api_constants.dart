@@ -10,7 +10,7 @@ class ApiConstants {
       "$baseSearchHistory/GetUserSearchHistory/";
 
   static const String baseTicket = "$baseUrl/api/TicketBooking";
-  static const String getAllTickets = "$baseTicket/GetAllTickets";
+  static const String getAllTickets = "$baseTicket/GetAllBookedTickets";
 
   static const String baseRating = "$baseUrl/api/UserAppRating";
   static const String getAllUserAppRatings = "$baseRating/GetAllUserAppRating";

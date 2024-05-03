@@ -115,7 +115,7 @@ class TicketBookingController extends GetxController {
       title: "Success",
       message: "Booked successfully",
     );
-    Get.offNamedUntil(RouteConstants.homeScreen, (route) => false);
+    //Get.offNamedUntil(RouteConstants.homeScreen, (route) => false);
     //Get.offNamedUntil(RouteConstants.ticketSummaryScreen, (route) => false);
     Get.back(closeOverlays: true, canPop: true);
   }
