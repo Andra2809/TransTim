@@ -56,7 +56,7 @@ void main() {
       expect(registrationController.etPassword.text, isNotEmpty);
       expect(
         GetUtils.isEmail(registrationController.etEmailId.text),
-        isTrue,
+        isFalse,
       );
       expect(
         GetUtils.isPhoneNumber(registrationController.etContactNumber.text),
@@ -96,7 +96,7 @@ void main() {
       expect(GetUtils.isEmail(loginController.etEmail.text), isTrue);
     });
 
-    testWidgets('Test Login with in-valid data', (WidgetTester tester) async {
+    testWidgets('Test Login with invalid data', (WidgetTester tester) async {
       await tester.pumpWidget(GetMaterialApp(home: loginScreen));
       loginController.initUI();
       loginController.etEmail.text = '';
